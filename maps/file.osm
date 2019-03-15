@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6">
+  <bounds minlat="44.7667500" minlon="-0.8588800" maxlat="44.7705300" maxlon="-0.8510300"/>
+  <node id="515330686" lat="44.7754213" lon="-0.8587464"/>
+  <node id="2097959544" lat="44.7216967" lon="-0.7988466"/>
+  <way id="199797372">
+    <nd ref="2097959544"/>
+    <nd ref="515330686"/>
+    <tag k="highway" v="tertiary"/>
+  </way>
+</osm>
