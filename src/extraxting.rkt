@@ -26,15 +26,15 @@
   (equal? (car id) (car l)))
 
 ;;add-neignbours --> retourne une liste des voisins selon le lien ids
-;;fonction à reparer
-(define (add-neighbours l ids f)
-  (cond
-    [(null? l) f]
-    [(is-id? (car ids) (car l)) (list (add-neighbours (cdr l) ids (cons (car l) (cadr ids))) f)]
-    [(is-id? (cadr ids) (car l)) (list (add-neighbours (cdr l) ids (cons (car l) (car ids))) f)]
-    [else (add-neighbours (cdr l) ids (list (car l) f))]
-    )
+;;nd a node, ids a list of  ways,
+(define (add-neighbours nd ids)
+  (list nd (remove* (list (car nd)) (flatten (map (lambda (list) (if (member (car nd) list) list '()))  ids))))
+)
+
+(define (make-graphe list-node list-way)
+  (list (map (add-neighbours) list-way))  
   )
+
 ;;construct-graphe construction du graphe à partir du fichier osm
 (define (construct-graphe file)
   (define way-list (extract-champs '() file 'way))
