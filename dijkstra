@@ -1,0 +1,114 @@
+#lang racket
+(require racket/trace)
+
+(struct vertex (id lat lon way))
+(struct graph (vx-ht)) 
+
+
+
+;(define (distance_Haversine s1 s2)
+;  (let * 
+;    ([la 0] 
+;     (- (car s2) (car s1))) ;différence de latitude
+;    (
+;     [lo 0] (- (cdr s2) (cdr s1))); différence de longitude
+;    (
+;     [d1 0] (* la 0.017))
+;    (
+;     [d2 0] (* lo 0.017))
+;    (
+;     [hav1 0] (+ (exp (sin (/ d1 2)) 2)) (* (cos (car s2)) (cos (car s1)) (exp (sin (/ d2 2)) 2)) 
+;          )
+;    (
+;     [hav2 0] (* 12400 (asin (sqrt hav1)))) ;la distance est prise en km 12400 = 2*6400 où 6400 désigne le rayon de la terre
+;    )
+;  hav2
+;  )
+
+
+
+(define (difference_latitude_deg s1 s2) ;; d1
+ (* (- (car s2) (car s1)) 0.017)
+ )
+
+(define (difference_longitude_deg s1 s2) ;; d2
+ (* (- (cdr s2) (cdr s1)) 0.017)
+ )
+
+(define (haversine_prim s1 s2)
+  (let*
+      ((d1 (difference_latitude_deg s1 s2))
+       (d2 (difference_longitude_deg s1 s2))
+       (hav1 ((+ (exp (sin (/ d1 2)) 2)) (* (cos (s2-)) (cos (car s1)) (exp (sin (/ d2 2)) 2)) 
+                                         )))
+    hav1)
+  )
+(define (haversine s1 s2)
+  (* 12400 (asin (sqrt (haversine_prim s1 s2))))
+  ) 
+    
+   
+(define v (vertex 2 '(3.2 4.7) '(5 6)))
+(define w (vertex 3 '(2.0 8.5) '(2 6)))
+
+(haversine v w)
+
+
+
+;(define (court_chemin depart arrivee graph)
+ ; (let *
+    ;(graph1 graph)
+  ;  (noeuds_visites '()
+   ;                 )
+    ;(distance_min '()                  
+    ;              )
+    ;(noeud_courant '()
+    ;               )
+    ;)
+  ;Intialisation du tableau des distances du départ vers les autres sommets
+  ;(map (lambda (x) '((vertex-id x) infini)) distance_min)
+  ;(cons '((vertex-id depart) 0) distance_min)
+ ; )
+
+;(define (Trouve_min way)
+ ; (let*
+  ;    ( mini infini)
+   ; ( sommet -1)))  
+  
+
+
+;(let *( graph1 cdr(graphe1))
+
+
+    
+    
+    
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+;(define parcours-liste l e)
+;(let ([i 0])
+ ; (while (<i 90)
+  ;       (if (= car l e)
+   ;          1
+    ;     (displayln i)
+     ;    (set! i (add1 i))))
+ ; 0))
