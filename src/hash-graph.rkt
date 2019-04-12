@@ -9,14 +9,14 @@
 (struct graph (vx-ht)) 
 
 (define v1 (vertex 1 3.2 4.7 '(2 3)))
-(define v2 (vertex 2 2.0 8.5 '(4 5 6)))
-(define v3 (vertex 3 1.5 9.1 '(7 8)))
-(define v4 (vertex 4 1.0 0.5 '()))
-(define v5 (vertex 5 5.2 8.4 '(9)))
-(define v6 (vertex 6 4.1 9.8 '()))
-(define v7 (vertex 7 14.0 2.4 '()))
-(define v8 (vertex 8 12.4 7.9 '()))
-(define v9 (vertex 9 13.8 2.1 '()))
+(define v2 (vertex 2 2.0 8.5 '(4 5 6 1)))
+(define v3 (vertex 3 1.5 9.1 '(7 8 1)))
+(define v4 (vertex 4 1.0 0.5 '(2)))
+(define v5 (vertex 5 5.2 8.4 '(9 2)))
+(define v6 (vertex 6 4.1 9.8 '(2)))
+(define v7 (vertex 7 14.0 2.4 '(3)))
+(define v8 (vertex 8 12.4 7.9 '(3)))
+(define v9 (vertex 9 13.8 2.1 '(5)))
 
 
 (hash-set! ht 1 v1)
@@ -41,14 +41,21 @@
    ;                         (set-add marked (vertex-id v)))]
     ;      [else marked])))
 
-(define (depth-first g v marked)
-  (display (vertex-id v))
-  (display "-")
+(define (inverse l)
+  (foldl cons '() l))
+
+(define (depth-first-1 g v marked)
+  ;;(display (vertex-id v))
+  ;;(display "-")
+  (let ([marked (set-add marked (vertex-id v))])
   (foldl (lambda (actual marked)
     (cond [(not (set-member? marked actual))
-               (depth-first g (hash-ref (graph-vx-ht g) actual)
-                            (set-add marked (vertex-id v)))]
-          [else (set-add marked (vertex-id actual))])) marked (vertex-way v) )  )
+               (depth-first-1 g (hash-ref (graph-vx-ht g) actual)
+                           marked )]
+          [else (inverse (set-add (inverse marked) actual))])) marked (vertex-way v) )))
 
-;;(trace depth-first)
-(depth-first g v1 '())
+
+;;(trace depth-first-1)
+(inverse (depth-first-1 g v3 '()))
+;;(define l '(1 2 3 4 5))
+;;(set-add l 12)
