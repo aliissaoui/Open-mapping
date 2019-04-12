@@ -39,9 +39,43 @@
   (list nd (remove* (list (car nd)) (flatten (map (lambda (list) (if (member (car nd) list) list '()))  list-way))))
 )
 
-(define (make-graph list-node list-way)
-  (list* (map (lambda (list-nd) (add-neighbours list-nd list-way) ) list-node))  
+
+(define (make-graph list-node list-way )
+  (define hash_graph (make-hash))
+  (map (lambda (list-nd) (hash-set! hash_graph (car list-nd) (add-neighbours list-nd list-way) )) list-node)
+  hash_graph
   )
 
 (define end-graph (make-graph (list-node graph) (list-way graph)))
 end-graph
+
+
+(define (distance lat lon) 1) ;; acts as a debug for now
+
+(define (remove_id_neighbour node graph) ;; this function changes neighbours (aka vertex) : A<->B<->C => A<->C
+  (let* ([fst_nd_id (caadr node)] [snd_nd_id (caadr node)]
+         [fst_nd (hash-set! graph fst_nd_id "In remove_id_neighbour : failed to get fst_nd")]
+         [snd_nd (hash-set! graph snd_nd_id "In remove_id_neighbour : failed to get snd_nd")])
+    (hash-set! graph fst_nd_id ((car fst_nd) (append (remove (caar node) (cadr fst_nd)) '(snd_nd_id) )))
+    (hash-set! graph snd_nd_id ((car snd_nd) (append (remove (caar node) (cadr snd_nd)) '(fst_nd_id) )))
+    
+  ))
+
+(define (reduce_aux node graph) ;; given a node, if degree = 2 :  deletes his id from its neighbours then deletes this node in the graph
+  (cond [equal? 2 (length (cadr node)) ((remove_id_neighbour node graph) (hash-remove! graph (caar node)))]
+  ))
+
+(define (reduce graph) ;; goes through each node to delete nodes of degree 2
+  (hash-map graph (lambda hash_node (reduce_aux (cadr hash_node) graph)))
+  )
+
+
+
+
+
+
+
+
+
+
+
