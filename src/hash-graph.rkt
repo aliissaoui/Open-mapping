@@ -32,21 +32,11 @@
 (define g (graph ht))
 (vertex-way (hash-ref (graph-vx-ht g) 2))
 
-;;(define (depth-first g v marked)
- ;; (display (vertex-id v))
-  ;;(display "-")
-  ;(for ([actual (vertex-way v)])
-  ;  (cond [(not (set-member? marked actual))
-  ;             (depth-first g (hash-ref (graph-vx-ht g) actual)
-   ;                         (set-add marked (vertex-id v)))]
-    ;      [else marked])))
-
 (define (inverse l)
   (foldl cons '() l))
 
+;; Parcours en profondeur d'un graphe
 (define (depth-first-1 g v marked)
-  ;;(display (vertex-id v))
-  ;;(display "-")
   (let ([marked (set-add marked (vertex-id v))])
   (foldl (lambda (actual marked)
     (cond [(not (set-member? marked actual))
@@ -55,7 +45,25 @@
           [else (inverse (set-add (inverse marked) actual))])) marked (vertex-way v) )))
 
 
+;;Itineraire entre deux sommets
+(define (itinerary g v w mark result)
+  (let ([mark (set-add mark (vertex-id v))]
+        [result (cons (vertex-id v) result)])
+  (foldl (lambda (actual mark)
+           (cond  [(equal? (vertex-id v) (vertex-id w)) result] ;; Si on a trouvé le vertex on fait mark = result 
+                  ;; Si ( (car mark est l'id du vertex recherché c'est fini)
+                  [(and (not (null? mark)) (= (car mark) (vertex-id w))) mark]
+                  ;; si le vertex n'a jamais était visité on visite ces voisins
+                  [(not (set-member? mark actual))
+                  (itinerary g (hash-ref (graph-vx-ht g) actual) w
+                             mark result)]
+                   ;; Sinon on ajoute le vertex actuel à la liste des vertex marqués
+                  [else (inverse (set-add (inverse mark) actual))])) mark (vertex-way v) )))
+
+
+
+
 ;;(trace depth-first-1)
-(inverse (depth-first-1 g v3 '()))
-;;(define l '(1 2 3 4 5))
-;;(set-add l 12)
+;;(trace itinerary)
+(inverse (depth-first-1 g v1 '() ))
+(inverse (itinerary g v8 v7 '() '()))
