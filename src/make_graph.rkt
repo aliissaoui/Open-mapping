@@ -1,16 +1,24 @@
 #lang racket
 (require xml)
+(require "hash-graph.rkt")
+
+;;;; STRUCT
+
+;;;; GRAPH
 
 (define osm (xml->xexpr (document-element
     (read-xml (open-input-file "../maps/projMapping.osm")))))
 
-(define graph (flatten osm))
+(define fullosm (xml->xexpr (document-element
+    (read-xml (open-input-file "../maps/fullmap.osm")))))
 
+(define flattenedOsm (flatten osm))
+(define flattenedFullOsm (flatten fullosm))
 (define (node-begin graph)
   (member 'node graph))
 
 (define (tuple-node graph)
-  (list (string->number(caddr graph)) (string->number(cadr (cdddr graph))) (string->number(caddr (cddr (cddr graph)))))
+  (list (string->number(cadr (member 'id graph))) (string->number(cadr (member 'lat graph))) (string->number(cadr (member 'lon graph))))
  )
 
 (define (list-node graph)
@@ -39,16 +47,34 @@
   (list nd (remove* (list (car nd)) (flatten (map (lambda (list) (if (member (car nd) list) list '()))  list-way))))
 )
 
+(define (cr-vertex list)
+  (vertex (first (first list)) (second(first list)) (third(first list)) (second list)))
 
 (define (make-graph list-node list-way )
   (define hash_graph (make-hash))
-  (map (lambda (list-nd) (hash-set! hash_graph (car list-nd) (add-neighbours list-nd list-way) )) list-node)
+  (map (lambda (list-nd) (hash-set! hash_graph (car list-nd) (cr-vertex ( add-neighbours list-nd list-way)) )) list-node)
   hash_graph
   )
 
-(define end-graph (make-graph (list-node graph) (list-way graph)))
-end-graph
+(define g2 (graph (make-graph (list-node flattenedOsm) (list-way flattenedOsm))))
 
+
+(define g3 (graph (make-graph (list-node flattenedFullOsm) (list-way flattenedFullOsm))))
+;full-graph
+
+
+
+;;;;;;;;;;; MAXLAT - MAXLON
+
+(define (box osm)
+  (list (string->number(cadr (member 'maxlat osm)))
+        (string->number(cadr (member 'maxlon osm)))
+        (string->number(cadr (member 'minlat osm)))
+        (string->number(cadr (member 'minlon osm)))
+))
+
+
+;;;;; DISTANCE
 
 (define (distance lat lon) 1) ;; acts as a debug for now
 
@@ -68,9 +94,6 @@ end-graph
 (define (reduce graph) ;; goes through each node to delete nodes of degree 2
   (hash-map graph (lambda hash_node (reduce_aux (cadr hash_node) graph)))
   )
-
-
-
 
 
 
