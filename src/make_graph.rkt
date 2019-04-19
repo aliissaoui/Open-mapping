@@ -4,13 +4,16 @@
 (define osm (xml->xexpr (document-element
     (read-xml (open-input-file "../maps/projMapping.osm")))))
 
+(define fullosm (xml->xexpr (document-element
+    (read-xml (open-input-file "../maps/fullmap.osm")))))
+
 (define graph (flatten osm))
 
 (define (node-begin graph)
   (member 'node graph))
 
 (define (tuple-node graph)
-  (list (string->number(caddr graph)) (string->number(cadr (cdddr graph))) (string->number(caddr (cddr (cddr graph)))))
+  (list (string->number(cadr (member 'id graph))) (string->number(cadr (member 'lat graph))) (string->number(cadr (member 'lon graph))))
  )
 
 (define (list-node graph)
@@ -49,6 +52,8 @@
 (define end-graph (make-graph (list-node graph) (list-way graph)))
 end-graph
 
+(define full-graph (make-graph (list-node (flatten fullosm)) (list-way (flatten fullosm))))
+full-graph
 
 (define (distance lat lon) 1) ;; acts as a debug for now
 
@@ -68,9 +73,6 @@ end-graph
 (define (reduce graph) ;; goes through each node to delete nodes of degree 2
   (hash-map graph (lambda hash_node (reduce_aux (cadr hash_node) graph)))
   )
-
-
-
 
 
 
