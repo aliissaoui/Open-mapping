@@ -114,10 +114,10 @@
 ;;;;;;;; EXECUTION
 (define test (make-graph (list-node flattenedOsm) (list-way flattenedOsm)))
 test
-(define g2 (graph (reduce (make-graph (list-node flattenedOsm) (list-way flattenedOsm)))))
+(define g2 (graph (make-graph (list-node flattenedOsm) (list-way flattenedOsm))))
 
 
-(define g3 (graph (reduce (make-graph (list-node flattenedFullOsm) (list-way flattenedFullOsm)))))
+(define g3 (graph  (make-graph (list-node flattenedFullOsm) (list-way flattenedFullOsm))))
 ;full-graph
 
 
