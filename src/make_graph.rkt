@@ -92,17 +92,17 @@
 ;;;;;; REDUCE
 
 (define (remove_id_neighbour node graph) ;; this function changes neighbours (aka vertex) : A<->B<->C => A<->C
-  (let* ([fst_nd_id (caadr node)] [snd_nd_id (caadr node)]
-         [fst_nd (hash-set! graph fst_nd_id "In remove_id_neighbour : failed to get fst_nd")]
-         [snd_nd (hash-set! graph snd_nd_id "In remove_id_neighbour : failed to get snd_nd")])
-    (hash-set! graph fst_nd_id ((car fst_nd) (append (remove (caar node) (cadr fst_nd)) '(snd_nd_id) )))
-    (hash-set! graph snd_nd_id ((car snd_nd) (append (remove (caar node) (cadr snd_nd)) '(fst_nd_id) )))
+  (let* ([fst_nd_id (first (vertex-way node))] [snd_nd_id (second (vertex-way node))]
+         [fst_nd (hash-ref! graph fst_nd_id "In remove_id_neighbour : failed to get fst_nd")]
+         [snd_nd (hash-ref! graph snd_nd_id "In remove_id_neighbour : failed to get snd_nd")])
+    (hash-set! graph fst_nd_id (vertex (vertex-id fst_nd) (vertex-lat fst_nd) (vertex-lon fst_nd) (remove-duplicates (append (remq (vertex-id node) (vertex-way fst_nd)) (list snd_nd_id) ))))
+    (hash-set! graph snd_nd_id (vertex (vertex-id snd_nd) (vertex-lat snd_nd) (vertex-lon snd_nd) (remove-duplicates (append (remq (vertex-id node) (vertex-way snd_nd)) (list fst_nd_id) ))))
     
   ))
 
 (define (reduce_aux node graph) ;; given a node, if degree = 2 :  deletes his id from its neighbours then deletes this node in the graph
-  (cond [equal? 2 (length  (vertex-way node)) #t]);((remove_id_neighbour node graph) (hash-remove! graph (caar node)))]
-  )
+  (cond [(equal? 2 (length  (vertex-way node))) (remove_id_neighbour node graph) (hash-remove! graph (vertex-id node))]
+ ))
 
 (define (reduce graph) ;; goes through each node to delete nodes of degree 2
   (hash-map graph (lambda vert (reduce_aux (cadr vert) graph)))
