@@ -48,42 +48,56 @@
 
 
 ;; Creer un cercle a partir d'un vertex
-(define circle-ray 5)
+(define circle-ray 10)
 
-(define (create-circle v)
+(define (create-circle color v)
   `(circle ((cx ,(number->string (exact->inexact (convert-lon (vertex-lon v)))))
             (cy ,(number->string (exact->inexact (convert-lat (vertex-lat v)))))
-            (r ,(number->string circle-ray)) (stroke "red") (fill "grey"))))
+            (r ,(number->string circle-ray)) (stroke "red") (fill ,color))))
 
 ;;(create-circle v1)
 
 ;; Creer une ligne entre deux vertex
-(define (create-line v w)
+(define (create-line color v w)
   `(line ((x1 ,(number->string (exact->inexact (convert-lon (vertex-lon v)))))
           (y1 ,(number->string (exact->inexact (convert-lat (vertex-lat v)))))
           (x2 ,(number->string (exact->inexact (convert-lon (vertex-lon w)))))
           (y2 ,(number->string (exact->inexact (convert-lat (vertex-lat w)))))
-          (stroke "black"))))
+          (stroke ,color))))
 
 ;; Creer tous les cercles d'un graphe
 (define (graph-circles g)
-  (map create-circle (hash-values (graph-vx-ht g))))
+  (map ((curry create-circle) "grey") (hash-values (graph-vx-ht g))))
 
 ;; Retourne une liste des Vertexs voisins d'un vertex passe en parametre
 (define (vertex-neighbors g v)
   (map ((curry hash-ref) (graph-vx-ht g)) (vertex-way v)))
 
 ;; Creer les lignes entre un vertex et ses voisins
-(define (vertex-lines g v)
-  (map ((curry create-line) v) (vertex-neighbors g v)))
+(define (vertex-lines g color v )
+  (map ((curry create-line) color v) (vertex-neighbors g v)))
 
 ;; Creer toutes les lignes d'un graphe
 (define (graph-lines g)
-  (apply append (map ((curry vertex-lines) g) (hash-values (graph-vx-ht g)))))
+  (apply append (map ((curry vertex-lines) g "black") (hash-values (graph-vx-ht g)))))
 
 ;; Tous les cercles et toutes les lignes d'un graphe
 (define (graph-map g)
   (append (graph-circles g) (graph-lines g)))
+
+;; Les fonctions necessaires a la representation d'un itineraire.
+(define (itinerary-circles g list)
+ (map ((curry create-circle) "green") (map ((curry hash-ref) (graph-vx-ht g)) list)))
+
+(define (itinerary-lines g list)
+  (let ([vx-list (doublet (map ((curry hash-ref) (graph-vx-ht g)) list))])
+  (map (lambda (x) (((curry create-line) "yellow") (first x) (second x))) vx-list)))
+
+(define (itinerary-map g list)
+  (append (itinerary-circles g list) (itinerary-lines g list)))
+
+
+
 
 
 #|

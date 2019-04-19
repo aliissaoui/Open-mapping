@@ -13,7 +13,7 @@
     (read-xml (open-input-file "../maps/projMapping.osm")))))
 
 (define fullosm (xml->xexpr (document-element
-    (read-xml (open-input-file "../maps/fullmap.osm")))))
+    (read-xml (open-input-file "../maps/pentagon.osm")))))
 
 (define flattenedOsm (flatten osm))
 (define flattenedFullOsm (flatten fullosm))

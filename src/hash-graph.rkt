@@ -3,8 +3,9 @@
 (provide (all-defined-out))
 ;;Graphe sous la forme d'un table de hashage:
 
-(define coef-lat 1080)
+(define coef-lat 1000)
 (define coef-lon 1920)
+
 
 (define ht (make-hash))
 
@@ -19,8 +20,8 @@
 (define v6 (vertex 6 2 2 '(2)))
 (define v7 (vertex 7 2 4 '(3)))
 (define v8 (vertex 8 2 6 '(3)))
-(define v9 (vertex 9 3 1 '(5)))
-
+(define v9 (vertex 9 3 1 '(5 10)))
+(define v10 (vertex 10 4 1 '(9)))
 
 (hash-set! ht 1 v1)
 (hash-set! ht 2 v2)
@@ -33,7 +34,7 @@
 (hash-set! ht 9 v9)
 
 (define g (graph ht))
-(vertex-way (hash-ref (graph-vx-ht g) 2))
+
 ;;(display (graph-vx-ht g))
 (define (inverse l)
   (foldl cons '() l))
@@ -63,10 +64,25 @@
                    ;; Sinon on ajoute le vertex actuel à la liste des vertex marqués
                   [else (inverse (set-add (inverse mark) actual))])) mark (vertex-way v) )))
 
+
+(define (id-itinerary g v-id w-id )
+  (itinerary g (hash-ref (graph-vx-ht g) v-id) (hash-ref (graph-vx-ht g) w-id) '() '()))
+
 ;;(trace depth-first-1)
 ;;(trace itinerary)
 ;;(inverse (depth-first-1 g v1 '() ))
 ;;(inverse (itinerary g v8 v7 '() '()))
 
 
+;;Creates a vertex
+(define (create-vertex id lat lon way)
+  (vertex id lat lon way))
+
+;;Adds a vertex to a graph
+(define (add-vertex g v)
+  (hash-set! (graph-vx-ht g) (vertex-id v) v))
+
+(add-vertex g v10)
+;;(display (graph-vx-ht g))
+(vertex-way (hash-ref (graph-vx-ht g) 10))
 

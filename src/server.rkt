@@ -3,7 +3,7 @@
 (require xml)
 (require web-server/servlet
          web-server/servlet-env)
-;;(require "hash-graph.rkt")
+(require "hash-graph.rkt")
 (require "graph-map.rkt")
 (require "make_graph.rkt")
 
@@ -15,8 +15,7 @@
      (body
       (svg
        ((viewBox "0 0 1920 1000"))
-       ;;.,(graph-map g)
-       .,(graph-map g3)
+       .,(append (graph-map g3) (itinerary-map g3 (id-itinerary g3 5297655521 5297655530)))
        )))))
 
 
