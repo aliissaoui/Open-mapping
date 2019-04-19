@@ -3,8 +3,9 @@
 (require xml)
 (require web-server/servlet
          web-server/servlet-env)
-(require "hash-graph.rkt")
+;;(require "hash-graph.rkt")
 (require "graph-map.rkt")
+(require "make_graph.rkt")
 
 ;; An example of a page returning TEXT with calls to fprintf
 (define (main-page req)
@@ -13,8 +14,9 @@
      (head (title "TEST OPEN MAPPING"))
      (body
       (svg
-       ((viewBox "0 0 2200 700"))
-       .,(graph-map g)
+       ((viewBox "0 0 1920 1000"))
+       ;;.,(graph-map g)
+       .,(graph-map g3)
        )))))
 
 
