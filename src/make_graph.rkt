@@ -1,6 +1,9 @@
 #lang racket
 (require xml)
 (require "hash-graph.rkt")
+(provide (all-defined-out))
+(require srfi/1)
+
 
 ;;;; STRUCT
 
@@ -34,17 +37,30 @@
     [else '()]
    ))
 
-(define (list-way graph)
+(define (list-way-aux graph)
   (let ([m (member 'way graph)])
   (cond
     [(equal? #f  m) '()]
-    [else (list* (tuple-way (member 'ref m)) (list-way (cdr m))) ]
+    [else (list* (tuple-way (member 'ref m)) (list-way-aux (cdr m))) ]
   )))
+
+(define (doublet L)
+  (cond
+    [(>= (length L) 2) (list* (list (first L) (second L)) (doublet (cdr L))) ]
+    [else '()]
+   )
+ )
+
+(define (list-way graph)
+  (let* ([L (list-way-aux graph)]
+        [doubled (map doublet L)])
+  (foldl append '() doubled)
+))
 
 ;;add-neignbours --> retourne une liste des voisins selon le lien ids
 ;;nd a node, ids a list of  ways,
 (define (add-neighbours nd list-way)
-  (list nd (remove* (list (car nd)) (flatten (map (lambda (list) (if (member (car nd) list) list '()))  list-way))))
+  (list nd (delete-duplicates (remove* (list (car nd)) (flatten (map (lambda (list) (if (member (car nd) list) list '()))  list-way)))))
 )
 
 (define (cr-vertex list)
@@ -55,12 +71,6 @@
   (map (lambda (list-nd) (hash-set! hash_graph (car list-nd) (cr-vertex ( add-neighbours list-nd list-way)) )) list-node)
   hash_graph
   )
-
-(define g2 (graph (make-graph (list-node flattenedOsm) (list-way flattenedOsm))))
-
-
-(define g3 (graph (make-graph (list-node flattenedFullOsm) (list-way flattenedFullOsm))))
-;full-graph
 
 
 
@@ -78,6 +88,9 @@
 
 (define (distance lat lon) 1) ;; acts as a debug for now
 
+
+;;;;;; REDUCE
+
 (define (remove_id_neighbour node graph) ;; this function changes neighbours (aka vertex) : A<->B<->C => A<->C
   (let* ([fst_nd_id (caadr node)] [snd_nd_id (caadr node)]
          [fst_nd (hash-set! graph fst_nd_id "In remove_id_neighbour : failed to get fst_nd")]
@@ -88,16 +101,24 @@
   ))
 
 (define (reduce_aux node graph) ;; given a node, if degree = 2 :  deletes his id from its neighbours then deletes this node in the graph
-  (cond [equal? 2 (length (cadr node)) ((remove_id_neighbour node graph) (hash-remove! graph (caar node)))]
-  ))
+  (cond [equal? 2 (length  (vertex-way node)) #t]);((remove_id_neighbour node graph) (hash-remove! graph (caar node)))]
+  )
 
 (define (reduce graph) ;; goes through each node to delete nodes of degree 2
-  (hash-map graph (lambda hash_node (reduce_aux (cadr hash_node) graph)))
+  (hash-map graph (lambda vert (reduce_aux (cadr vert) graph)))
   )
 
 
 
 
+;;;;;;;; EXECUTION
+(define test (make-graph (list-node flattenedOsm) (list-way flattenedOsm)))
+test
+(define g2 (graph (make-graph (list-node flattenedOsm) (list-way flattenedOsm))))
+
+
+(define g3 (graph (make-graph (list-node flattenedFullOsm) (list-way flattenedFullOsm))))
+;full-graph
 
 
 
