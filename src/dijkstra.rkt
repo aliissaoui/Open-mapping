@@ -60,55 +60,62 @@
     [(cons v tail)
      (initialisation id_sommet tail (cons (cons v (if (eq? v id_sommet) 0  'infini)) l))]))
 
-#|(define v (vertex 2 5 1 '(5 6)))
+(define v (vertex 2 5 1 '(5 6)))
 (define w (vertex 3 0 9 '(2 6)))
 (define t (vertex 1 8 1 '(5 6)))
 (define z (vertex 4 7 9 '(9 6)))
-(define l '(v w z t))
+(define l (list v w z t))
+(define l1 '(2 3 1 4))
 (define d '())
-(initialisation 'v l '())
-|#
+
+(initialisation 2 l1 '())
+
 
 (define (data id gr)              
   (hash-ref (graph-vx-ht gr) id)) 
 
-(define (min_dis liste_sommet sdep dis d) ; dis contient initialement une valeur 10**36 superieure aux distances séparant chaque deux points du graph par exe 
-  (cond [(null? liste_sommet) d]
-        [(<= (haversine sdep (car liste_sommet)) d)] ;recuperer toute la structure vertex
-        [else (min_dis sdep (cdr liste_sommet))
-        d])
+(define (min_dis liste_sommet sdep d smin)                                                     ;d contient initialement une valeur superieure aux distances   
+  (cond [(null? liste_sommet) smin]                                                            ;séparant chaque deux points du graph, 10**36 par exemple et liste_sommet est une liste de vertex
+        [(and (<= (haversine sdep (car liste_sommet)) d) (not(eq? (car liste_sommet) sdep)))
+         (min_dis (cdr liste_sommet) sdep (haversine sdep (car liste_sommet)) (car liste_sommet))]                   
+        [else (min_dis (cdr liste_sommet) sdep d smin)]
+        )
   )
 
+(min_dis l v 100000000000000000 w)
 
-#|(define (maj_distance sdep s1 s2 pred dis )
+
+#|(define (maj_dis s d dis)
+  (if (eq? s (car (car dis)))
+      (cons (list s d) (cdr dis)) 
+      (cons (car dis) (maj_dis s d (cdr dis))))         
+  )
+
+(maj_dis 1 10 '((4 . infini) (1 . infini) (3 . infini) (2 . 0))) 
+
+
+
+(define (maj_distance sdep s1 s2 pred dis )
   (if (> (haversine sdep s2) (+ (haversine sdep s2) (haversine s2 s1)))
       (maj_dis dis s2 (+ (haversine sdep s2) (haversine s2 s1)))
-      (void)))
-  
-(define (maj_dis dis s d)
-  (cond [(eq? s (car (car dis)))
-         (set! (cdr (car dis)) 'd )]
-        [else (void)]
-        )
+      (void))
   dis)
+  
+|#
 
-(define (maj_pred pred s1 s2) ;le tableau des predecesseurs est un tableau
+
+(define (maj_pred pred s1 s2)                     ;le predecesseur de s2 est s1 
   (cond [(eq? s2 (car (car pred)))
-         (set! (cdr (car pred)) s1 )]
-        [else (void)]
-        pred))
-     
-
-  
+         (cons (list s2 s1) (cdr pred))]
+        [else (maj_pred (cdr pred) s1 s2)])
+        pred)
 
 
-      ;((+ (haversine sdep s2) (haversine s2 s1)) & (cons pred 
-      ;(haversine sdep s2))))
+;((+ (haversine sdep s2) (haversine s2 s1)) & (cons pred
+;(haversine sdep s2))))
 
-
-  |#    
-  
-  
+;; car et cdr
+;; comment faire en sorte que le car récupéré soit de structure vertex
 
 
 
