@@ -1,6 +1,7 @@
 #lang racket
 
 (require "hash-graph.rkt")
+(require "make_graph.rkt")
 (provide (all-defined-out))
 ;;Retourne la liste de toutes les clés d'un graphe
 
@@ -25,12 +26,14 @@
 (define (min-lat g)
   (apply min (list-lat g)))
 
-(define minlat (min-lat g))
-(define maxlat (max-lat g))
-(define minlon (min-lon g))
-(define maxlon (max-lon g))
+(define extremums (box flattenedFullOsm))
 
+(define maxlat (first extremums))
+(define maxlon (second extremums))
+(define minlat (third extremums))
+(define minlon (fourth extremums))
 
+(display extremums)
 ;;convertir les coordonnees en format svr
 
 (define (convert-lat lat)
@@ -39,6 +42,9 @@
 
 (define (convert-lon lon)
   (* (/ (- minlon lon) (- minlon maxlon)) coef-lon))
+
+;;(convert-lat (vertex-lat (hash-ref (graph-vx-ht g3) 569851403)))
+;;(convert-lon (vertex-lon (hash-ref (graph-vx-ht g3) 569851403)))
 
 
 ;; Creer un cercle a partir d'un vertex
@@ -58,6 +64,7 @@
           (x2 ,(number->string (exact->inexact (convert-lon (vertex-lon w)))))
           (y2 ,(number->string (exact->inexact (convert-lat (vertex-lat w)))))
           (stroke "black"))))
+
 ;; Creer tous les cercles d'un graphe
 (define (graph-circles g)
   (map create-circle (hash-values (graph-vx-ht g))))
@@ -77,11 +84,13 @@
 ;; Tous les cercles et toutes les lignes d'un graphe
 (define (graph-map g)
   (append (graph-circles g) (graph-lines g)))
+
+
 #|
 (graph-circles g)
 (vertex-neighbors g v2)
 (vertex-lines g v2)
 (graph-lines g)
-(graph-map g)|#
 
-;;(graph-map g)
+(graph-map g3)|#
+;;(graph-map g3)
