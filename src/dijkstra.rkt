@@ -74,8 +74,8 @@
 (define (data id gr)              
   (hash-ref (graph-vx-ht gr) id)) 
 
-(define (min_dis liste_sommet sdep d smin)                                                     ;d contient initialement une valeur superieure aux distances   
-  (cond [(null? liste_sommet) smin]                                                            ;séparant chaque deux points du graph, 10**36 par exemple et liste_sommet est une liste de vertex
+(define (min_dis liste_sommet sdep d smin)                                                  ;d contient initialement une valeur superieure aux distances   
+  (cond [(null? liste_sommet) (cons (vertex-id smin) d)]                                    ;séparant chaque deux points du graph, 10**36 par exemple et liste_sommet est une liste de vertex
         [(and (<= (haversine sdep (car liste_sommet)) d) (not(eq? (car liste_sommet) sdep)))
          (min_dis (cdr liste_sommet) sdep (haversine sdep (car liste_sommet)) (car liste_sommet))]                   
         [else (min_dis (cdr liste_sommet) sdep d smin)]
@@ -85,7 +85,7 @@
 (min_dis l v 100000000000000000 w)
 
 
-#|(define (maj_dis s d dis)
+#|(define (maj_dis s d dis) ; met à jour le tableau des distances
   (if (eq? s (car (car dis)))
       (cons (list s d) (cdr dis)) 
       (cons (car dis) (maj_dis s d (cdr dis))))         
@@ -95,8 +95,8 @@
 
 
 
-(define (maj_distance sdep s1 s2 pred dis )
-  (if (> (haversine sdep s2) (+ (haversine sdep s2) (haversine s2 s1)))
+(define (maj_distance sdep s1 s2 pred dis )  ; met à jour la valeur de la distance
+  (if (> (haversine sdep s1) (+ (haversine sdep s2) (haversine s2 s1)))
       (maj_dis dis s2 (+ (haversine sdep s2) (haversine s2 s1)))
       (void))
   dis)
