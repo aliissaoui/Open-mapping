@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="CGImap 0.6.1 (11405 thorn-02.openstreetmap.org)" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
+  <bounds minlat="28.9775100" minlon="-10.0477600" maxlat="28.9777400" maxlon="-10.0475400"/>
+  <node id="1" visible="true" version="4" changeset="60313453" timestamp="2018-07-01T02:40:51Z" user="alain2003" uid="578772" lat="0" lon="3"/>
+  <node id="2" visible="true" version="2" changeset="13005729" timestamp="2012-09-06T06:34:49Z" user="staehler" uid="118856" lat="1" lon="1"/>
+  <node id="3" visible="true" version="1" changeset="60313453" timestamp="2018-07-01T02:40:38Z" user="alain2003" uid="578772" lat="1" lon="5"/>
+  <node id="4" visible="true" version="1" changeset="60313453" timestamp="2018-07-01T02:40:38Z" user="alain2003" uid="578772" lat="2" lon="0"/>
+  <node id="5" visible="true" version="1" changeset="60313453" timestamp="2018-07-01T02:40:38Z" user="alain2003" uid="578772" lat="2" lon="1"/>
+  <node id="6" visible="true" version="1" changeset="60313453" timestamp="2018-07-01T02:40:38Z" user="alain2003" uid="578772" lat="2" lon="2"/>
+  <node id="7" visible="true" version="1" changeset="60313453" timestamp="2018-07-01T02:40:38Z" user="alain2003" uid="578772" lat="2" lon="4"/>
+  <node id="8" visible="true" version="1" changeset="60313453" timestamp="2018-07-01T02:40:38Z" user="alain2003" uid="578772" lat="2" lon="6"/>
+  <node id="8" visible="true" version="1" changeset="60313453" timestamp="2018-07-01T02:40:38Z" user="alain2003" uid="578772" lat="3" lon="1"/>
+  <node id="9" visible="true" version="1" changeset="60313453" timestamp="2018-07-01T02:40:38Z" user="alain2003" uid="578772" lat="28.9780206" lon="-10.0475138"/>
+  <way id="126" visible="true" version="1" changeset="60313453" timestamp="2018-07-01T02:40:46Z" user="alain2003" uid="578772">
+    <nd ref="1"/>
+    <nd ref="2"/>
+    <nd ref="6"/>
+    <tag k="highway" v="secondary"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="124" visible="true" version="1" changeset="60313453" timestamp="2018-07-01T02:40:46Z" user="alain2003" uid="578772">
+    <nd ref="1"/>
+    <nd ref="2"/>
+    <nd ref="4"/>
+    <tag k="highway" v="secondary"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="1259" visible="true" version="1" changeset="60313453" timestamp="2018-07-01T02:40:46Z" user="alain2003" uid="578772">
+    <nd ref="1"/>
+    <nd ref="2"/>
+    <nd ref="5"/>
+    <nd ref="9"/>
+    <tag k="highway" v="secondary"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="138" visible="true" version="1" changeset="60313453" timestamp="2018-07-01T02:40:46Z" user="alain2003" uid="578772">
+    <nd ref="1"/>
+    <nd ref="3"/>
+    <nd ref="8"/>
+    <tag k="highway" v="secondary"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="137" visible="true" version="1" changeset="60313453" timestamp="2018-07-01T02:40:46Z" user="alain2003" uid="578772">
+    <nd ref="1"/>
+    <nd ref="3"/>
+    <nd ref="7"/>
+    <tag k="highway" v="secondary"/>
+  </way>
+</osm>
