@@ -3,14 +3,20 @@
 (require xml)
 (require web-server/servlet
          web-server/servlet-env)
+(require "hash-graph.rkt")
+(require "graph-map.rkt")
 
 ;; An example of a page returning TEXT with calls to fprintf
 (define (main-page req)
-  (response/output
-    #:mime-type TEXT/HTML-MIME-TYPE
-    (lambda (out)
-      (fprintf out "HELLO FROM THE OPEN MAPPING SERVICE~n")
-      )))
+  (response/xexpr
+   `(html
+     (head (title "TEST OPEN MAPPING"))
+     (body
+      (svg
+       ((viewBox "0 0 2200 700"))
+       .,(graph-map g)
+       )))))
+
 
 ;; An example of a page returning HTML with xexprs and macros
 (define (display-page req)
@@ -33,3 +39,4 @@
                #:servlet-regexp #rx""
                #:port 9000
                #:launch-browser? #f)
+
