@@ -45,7 +45,7 @@
     (* 12742 (asin (sqrt hav1))) ;12742 = 2*le rayon de la terre=2* 6371 
   ))
     
-;(vertex-way (hash-ref (graph-vx-ht g) 2))   
+  
 
 #|(define v (vertex 2 5 1 '(5 6)))
 (define w (vertex 3 0 9 '(2 6)))
@@ -74,6 +74,8 @@
 (define (data id gr)              
   (hash-ref (graph-vx-ht gr) id)) 
 
+;(vertex-way (hash-ref (graph-vx-ht g) 2)) 
+
 (define (min_dis liste_sommet sdep d smin)                                                  ;d contient initialement une valeur superieure aux distances   
   (cond [(null? liste_sommet) (cons (vertex-id smin) d)]                                    ;séparant chaque deux points du graph, 10**36 par exemple et liste_sommet est une liste de vertex
         [(and (<= (haversine sdep (car liste_sommet)) d) (not(eq? (car liste_sommet) sdep)))
@@ -82,48 +84,31 @@
         )
   )
 
-(min_dis l v 100000000000000000 w)
+;(min_dis l v 100000000000000000 w)
 
 
-(define (maj_dis s d dis) ; met à jour le tableau des distances
+(define (maj_tab_dis s d dis)                                                ;met à jour le tableau des distances
   (if (eq? s (car (car dis)))
       (cons (list s d) (cdr dis)) 
-      (cons (car dis) (maj_dis s d (cdr dis))))         
+      (cons (car dis) (maj_tab_dis s d (cdr dis))))         
   )
 
-(maj_dis 1 10 '((4 . infini) (1 . infini) (3 . infini) (2 . 0))) 
+;(maj_dis 1 10 '((4 . infini) (1 . infini) (3 . infini) (2 . 0))) 
 
-
-
-(define (maj_distance sdep s1 s2 pred dis )  ; met à jour la valeur de la distance
-  (if (> (haversine sdep s1) (+ (haversine sdep s2) (haversine s2 s1)))
-      (maj_dis dis s2 (+ (haversine sdep s2) (haversine s2 s1)))
-      (void))
-  dis)
-  
-#|
-
-
-(define (maj_pred pred s1 s2)                     ;le predecesseur de s2 est s1 
-  (cond [(eq? s2 (car (car pred)))
-         (cons (list s2 s1) (cdr pred))]
+(define (maj_pred pred s1 s2)                     ;le predecesseur de s2 est s1 (s1 s2) 
+  (cond [(eq? s2 (cdr (car pred)))
+         (cons (list s1 s2) (cdr pred))]
         [else (maj_pred (cdr pred) s1 s2)])
         pred)
 
 
-;((+ (haversine sdep s2) (haversine s2 s1)) & (cons pred
-;(haversine sdep s2))))
-
-;; car et cdr
-;; comment faire en sorte que le car récupéré soit de structure vertex
-|#
-
-
-                                         
-
-
-
-
+(define (maj_distance sdep s1 s2 pred dis )                               ;met à jour la valeur de la distance et le predecesseur
+  (if (> (haversine sdep s2) (+ (haversine sdep s1) (haversine s2 s1)))
+      (and (maj_tab_dis s2 (+ (haversine sdep s2) (haversine s2 s1)) dis)
+           (maj_pred s1 s2)) 
+      (void))
+  )
+  
 
 
 
