@@ -85,7 +85,7 @@
 (min_dis l v 100000000000000000 w)
 
 
-#|(define (maj_dis s d dis) ; met à jour le tableau des distances
+(define (maj_dis s d dis) ; met à jour le tableau des distances
   (if (eq? s (car (car dis)))
       (cons (list s d) (cdr dis)) 
       (cons (car dis) (maj_dis s d (cdr dis))))         
@@ -101,7 +101,7 @@
       (void))
   dis)
   
-|#
+#|
 
 
 (define (maj_pred pred s1 s2)                     ;le predecesseur de s2 est s1 
@@ -116,7 +116,7 @@
 
 ;; car et cdr
 ;; comment faire en sorte que le car récupéré soit de structure vertex
-
+|#
 
 
                                          
