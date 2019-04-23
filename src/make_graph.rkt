@@ -106,6 +106,7 @@
 
 (define (reduce graph) ;; goes through each node to delete nodes of degree 2
   (hash-map graph (lambda vert (reduce_aux (cadr vert) graph)))
+  graph
   )
 
 
@@ -114,10 +115,13 @@
 ;;;;;;;; EXECUTION
 (define test (make-graph (list-node flattenedOsm) (list-way flattenedOsm)))
 test
-(define g2 (graph (make-graph (list-node flattenedOsm) (list-way flattenedOsm))))
+(define g2 (graph (reduce (make-graph (list-node flattenedOsm) (list-way flattenedOsm)))))
 
-
-(define g3 (graph  (make-graph (list-node flattenedFullOsm) (list-way flattenedFullOsm))))
+(define g3_aux (make-graph (list-node flattenedFullOsm) (list-way flattenedFullOsm)))
+(hash-count g3_aux)
+(reduce g3_aux)
+(hash-count g3_aux)
+(define g3 (graph (reduce (make-graph (list-node flattenedFullOsm) (list-way flattenedFullOsm))) ))
 ;full-graph
 
 
