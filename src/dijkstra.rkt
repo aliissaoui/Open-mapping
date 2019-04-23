@@ -1,9 +1,8 @@
 #lang racket
 
-(define ht (make-hash))
-
-(struct vertex (id lat lon way))
-(struct graph (vx-ht)) 
+(require "hash-graph.rkt")
+(provide (all-defined-out))
+ 
 
 #|(define v1 (vertex 1 3.2 4.7 '(2 3)))
 (define v2 (vertex 2 2.0 8.5 '(4 5 6 1)))
