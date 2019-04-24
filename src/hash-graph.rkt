@@ -22,7 +22,8 @@
 (define v8 (vertex 8 2 6 '(3)))
 (define v9 (vertex 9 3 1 '(5 10)))
 (define v10 (vertex 10 4 1 '(9)))
-
+(define v11 (vertex 11 5 3 '(12)))
+(define v12 (vertex 12 6 7 '(11)))
 (hash-set! ht 1 v1)
 (hash-set! ht 2 v2)
 (hash-set! ht 3 v3)
@@ -32,8 +33,11 @@
 (hash-set! ht 7 v7)
 (hash-set! ht 8 v8)
 (hash-set! ht 9 v9)
+(hash-set! ht 10 v10)
+(hash-set! ht 11 v11)
+(hash-set! ht 12 v12)
 
-(define g (graph ht))
+(define test (graph ht))
 
 ;;(display (graph-vx-ht g))
 (define (inverse l)
@@ -70,8 +74,8 @@
 
 ;;(trace depth-first-1)
 ;;(trace itinerary)
-;;(inverse (depth-first-1 g v1 '() ))
-;;(inverse (itinerary g v8 v7 '() '()))
+;;(inverse (depth-first-1 test v1 '() ))
+;;(inverse (itinerary test v1 v12 '() '()))
 
 
 ;;Creates a vertex
@@ -82,7 +86,7 @@
 (define (add-vertex g v)
   (hash-set! (graph-vx-ht g) (vertex-id v) v))
 
-(add-vertex g v10)
+(add-vertex test v10)
 ;;(display (graph-vx-ht g))
-(vertex-way (hash-ref (graph-vx-ht g) 10))
+;;(vertex-way (hash-ref (graph-vx-ht g) 10))
 

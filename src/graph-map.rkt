@@ -32,8 +32,14 @@
 (define maxlon (second extremums))
 (define minlat (third extremums))
 (define minlon (fourth extremums))
+#|
 
-(display extremums)
+(define maxlat (max-lat g))
+(define maxlon (max-lon g))
+(define minlat (min-lat g))
+(define minlon (min-lon g))
+|#
+;;(display extremums)
 ;;convertir les coordonnees en format svr
 
 (define (convert-lat lat)
@@ -43,17 +49,14 @@
 (define (convert-lon lon)
   (* (/ (- minlon lon) (- minlon maxlon)) coef-lon))
 
-;;(convert-lat (vertex-lat (hash-ref (graph-vx-ht g3) 569851403)))
-;;(convert-lon (vertex-lon (hash-ref (graph-vx-ht g3) 569851403)))
-
 
 ;; Creer un cercle a partir d'un vertex
-(define circle-ray 10)
+(define circle-ray 3)
 
-(define (create-circle color v)
+(define (create-circle color ray v)
   `(circle ((cx ,(number->string (exact->inexact (convert-lon (vertex-lon v)))))
             (cy ,(number->string (exact->inexact (convert-lat (vertex-lat v)))))
-            (r ,(number->string circle-ray)) (stroke "red") (fill ,color))))
+            (r ,(number->string ray)) (stroke "red") (fill ,color))))
 
 ;;(create-circle v1)
 
@@ -67,7 +70,7 @@
 
 ;; Creer tous les cercles d'un graphe
 (define (graph-circles g)
-  (map ((curry create-circle) "grey") (hash-values (graph-vx-ht g))))
+  (map ((curry create-circle) "grey" circle-ray) (hash-values (graph-vx-ht g))))
 
 ;; Retourne une liste des Vertexs voisins d'un vertex passe en parametre
 (define (vertex-neighbors g v)
@@ -87,24 +90,16 @@
 
 ;; Les fonctions necessaires a la representation d'un itineraire.
 (define (itinerary-circles g list)
- (map ((curry create-circle) "green") (map ((curry hash-ref) (graph-vx-ht g)) list)))
+ (map ((curry create-circle) "green" 15) (map ((curry hash-ref) (graph-vx-ht g)) list)))
 
 (define (itinerary-lines g list)
   (let ([vx-list (doublet (map ((curry hash-ref) (graph-vx-ht g)) list))])
   (map (lambda (x) (((curry create-line) "yellow") (first x) (second x))) vx-list)))
 
-(define (itinerary-map g list)
-  (append (itinerary-circles g list) (itinerary-lines g list)))
+
+(define (itinerary-map g liste)
+  (append (itinerary-circles g liste) (itinerary-lines g liste)
+          (list (create-circle "blue" 15 (hash-ref (graph-vx-ht g) (first liste)))
+                (create-circle "blue" 15 (hash-ref (graph-vx-ht g) (first (reverse liste)))))))
 
 
-
-
-
-#|
-(graph-circles g)
-(vertex-neighbors g v2)
-(vertex-lines g v2)
-(graph-lines g)
-
-(graph-map g3)|#
-;;(graph-map g3)

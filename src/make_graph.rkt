@@ -9,19 +9,17 @@
 
 ;;;; GRAPH
 
-(define osm (xml->xexpr (document-element
-    (read-xml (open-input-file "../maps/projMapping.osm")))))
 
-(define fullosm (xml->xexpr (document-element
-    (read-xml (open-input-file "../maps/pentagon.osm")))))
+(define (osm->graph my-map)
+  (flatten (xml->xexpr (document-element
+    (read-xml (open-input-file my-map))))))
 
-(define flattenedOsm (flatten osm))
-(define flattenedFullOsm (flatten fullosm))
-(define (node-begin graph)
-  (member 'node graph))
+(define flattenedFullOsm (flatten (osm->graph (vector-ref (current-command-line-arguments) 0))))
 
 (define (tuple-node graph)
-  (list (string->number(cadr (member 'id graph))) (string->number(cadr (member 'lat graph))) (string->number(cadr (member 'lon graph))))
+  (list (string->number(cadr (member 'id graph)))
+        (string->number(cadr (member 'lat graph)))
+        (string->number(cadr (member 'lon graph))))
  )
 
 (define (list-node graph)
@@ -33,7 +31,8 @@
 
 (define (tuple-way graph)
   (cond
-    [(equal? 'ref (car graph)) (list* (string->number (cadr graph)) (tuple-way (cddddr graph)))]
+    [(equal? 'ref (car graph)) (list* (string->number (cadr graph))
+                                      (tuple-way (cddddr graph)))]
     [else '()]
    ))
 
@@ -57,8 +56,6 @@
   (foldl append '() doubled)
 ))
 
-;;add-neignbours --> retourne une liste des voisins selon le lien ids
-;;nd a node, ids a list of  ways,
 (define (add-neighbours nd list-way)
   (list nd (delete-duplicates (remove* (list (car nd)) (flatten (map (lambda (list) (if (member (car nd) list) list '()))  list-way)))))
 )
@@ -101,29 +98,23 @@
   ))
 
 (define (reduce_aux node graph) ;; given a node, if degree = 2 :  deletes his id from its neighbours then deletes this node in the graph
-  (cond [(equal? 2 (length  (vertex-way node))) (remove_id_neighbour node graph) (hash-remove! graph (vertex-id node))]
+  (cond [(equal? 2 (length  (vertex-way node)))
+         (remove_id_neighbour node graph)
+         (hash-remove! graph (vertex-id node))]
  ))
 
 (define (reduce graph) ;; goes through each node to delete nodes of degree 2
-  (hash-map graph (lambda vert (reduce_aux (cadr vert) graph)))
-  graph
-  )
+  (hash-map graph (lambda vert (reduce_aux (cadr vert) graph))))
 
 
+(define g (graph (make-graph (list-node flattenedFullOsm) (list-way flattenedFullOsm))))
+;;(define g2 (graph (reduce (make-graph (list-node flattenedOsm) (list-way flattenedOsm)))))
 
-
-;;;;;;;; EXECUTION
-(define test (make-graph (list-node flattenedOsm) (list-way flattenedOsm)))
-test
-(define g2 (graph (reduce (make-graph (list-node flattenedOsm) (list-way flattenedOsm)))))
-
+#|
 (define g3_aux (make-graph (list-node flattenedFullOsm) (list-way flattenedFullOsm)))
 (hash-count g3_aux)
 (reduce g3_aux)
 (hash-count g3_aux)
 (define g3 (graph (reduce (make-graph (list-node flattenedFullOsm) (list-way flattenedFullOsm))) ))
 ;full-graph
-
-
-
-
+|#
