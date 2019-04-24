@@ -100,6 +100,6 @@
 (define (itinerary-map g liste)
   (append (itinerary-circles g liste) (itinerary-lines g liste)
           (list (create-circle "blue" 15 (hash-ref (graph-vx-ht g) (first liste)))
-                (create-circle "blue" 15 (hash-ref (graph-vx-ht g) (first (reverse liste)))))))
+                (create-circle "brown" 15 (hash-ref (graph-vx-ht g) (first (reverse liste)))))))
 
 

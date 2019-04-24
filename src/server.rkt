@@ -29,16 +29,23 @@
                (h1 ," Error666: Please enter start and end ids ")
                (pre ,(format "~a" " Use : http://localhost:9000/route?start=<id>&end=<id>")))))
       
-      (let ([start (string->number (extract-binding/single 'start (request-bindings req)))]
-            [end   (string->number (extract-binding/single 'end (request-bindings req)))])
-        (response/xexpr
-         `(html
-           (head (title "ITINERARY"))
-           (body
-            (svg
-             ((viewBox "0 0 1920 1000"))
-             .,(append (graph-map g)
-                       (itinerary-map g (id-itinerary g start end))))))))))
+      (let* ([start (string->number (extract-binding/single 'start (request-bindings req)))]
+            [end   (string->number (extract-binding/single 'end (request-bindings req)))]
+            [itinerary (id-itinerary g start end)])
+        (if (not (= (length itinerary) 1))
+            (response/xexpr
+             `(html
+               (head (title "ITINERARY"))
+               (body
+                (svg
+                 ((viewBox "0 0 1920 1000"))
+                 .,(append (graph-map g)
+                           (itinerary-map g itinerary))))))
+            (response/xexpr
+             `(html (head (title " Disconnected Universe"))
+                    (body
+                     (h1 ," Error777:  Disconnected Universe Error ")
+                     (pre ,(format "~a" " Use connected ids with end != start")))))))))
   
 
 ;; An example of a page returning HTML with xexprs and macros
