@@ -90,7 +90,7 @@
 
 ;; Les fonctions necessaires a la representation d'un itineraire.
 (define (itinerary-circles g list)
- (map ((curry create-circle) "green" 15) (map ((curry hash-ref) (graph-vx-ht g)) list)))
+ (map ((curry create-circle) "Yellow" 15) (map ((curry hash-ref) (graph-vx-ht g)) list)))
 
 (define (itinerary-lines g list)
   (let ([vx-list (doublet (map ((curry hash-ref) (graph-vx-ht g)) list))])
