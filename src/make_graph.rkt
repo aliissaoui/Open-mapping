@@ -14,7 +14,10 @@
   (flatten (xml->xexpr (document-element
     (read-xml (open-input-file my-map))))))
 
-(define flattenedFullOsm (flatten (osm->graph (vector-ref (current-command-line-arguments) 0))))
+;;(define flattenedFullOsm (flatten (osm->graph (vector-ref (current-command-line-arguments) 0))))
+(define flattenedFullOsm (let ([args (current-command-line-arguments)])
+                           (cond [(null? (vector->list args)) (flatten (osm->graph "../maps/pentagon.osm"))]
+                                 [else (flatten (osm->graph (vector-ref args 0)))])))
 
 (define (tuple-node graph)
   (list (string->number(cadr (member 'id graph)))
