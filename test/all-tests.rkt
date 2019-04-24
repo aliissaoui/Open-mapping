@@ -7,7 +7,7 @@
 (require "../src/hash-graph.rkt")
 
 (define osm (xml->xexpr (document-element
-    (read-xml (open-input-file "../maps/test_map.osm")))))
+    (read-xml (open-input-file "maps/test_map.osm")))))
 (define f (flatten osm))
 (define g3 (graph (make-graph (list-node f) (list-way f))))
 
