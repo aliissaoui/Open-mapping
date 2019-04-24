@@ -15,6 +15,10 @@
     (read-xml (open-input-file my-map))))))
 
 (define flattenedFullOsm (flatten (osm->graph (vector-ref (current-command-line-arguments) 0))))
+;(define fullosm (xml->xexpr (document-element
+;    (read-xml (open-input-file "../maps/pentagon.osm")))))
+;(define flattenedFullOsm (flatten fullosm))
+
 
 (define (tuple-node graph)
   (list (string->number(cadr (member 'id graph)))
@@ -104,10 +108,11 @@
  ))
 
 (define (reduce graph) ;; goes through each node to delete nodes of degree 2
-  (hash-map graph (lambda vert (reduce_aux (cadr vert) graph))))
+  (hash-map graph (lambda vert (reduce_aux (cadr vert) graph)))
+  graph)
 
 
-(define g (graph (make-graph (list-node flattenedFullOsm) (list-way flattenedFullOsm))))
+(define g (graph (reduce (make-graph (list-node flattenedFullOsm) (list-way flattenedFullOsm)))))
 ;;(define g2 (graph (reduce (make-graph (list-node flattenedOsm) (list-way flattenedOsm)))))
 
 #|
@@ -118,3 +123,4 @@
 (define g3 (graph (reduce (make-graph (list-node flattenedFullOsm) (list-way flattenedFullOsm))) ))
 ;full-graph
 |#
+
