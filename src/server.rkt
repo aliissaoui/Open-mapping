@@ -16,23 +16,30 @@
      (head (title "NORMAL MAP"))
      (body
       (svg
-       ((viewBox "0 0 1920 1000"))
+       ((viewBox "0 0 1920 1080"))
        .,(graph-map g))))))
 
 ;;Showing the itinerary between two vertexes given in the url 
 
 (define (route req)
-  (let ([start (string->number (extract-binding/single 'start (request-bindings req)))]
-        [end   (string->number (extract-binding/single 'end (request-bindings req)))])
-  (response/xexpr
-   `(html
-     (head (title "ITINERARY"))
-     (body
-      (svg
-       ((viewBox "0 0 1920 1000"))
-       .,(append (graph-map g)
-                 (itinerary-map g (id-itinerary g start end)))))))))
-
+  (if (null? (request-bindings req))
+      (response/xexpr
+       `(html (head (title "NO IDs"))
+              (body
+               (h1 ," Error666: Please enter start and end ids ")
+               (pre ,(format "~a" " Use : http://localhost:9000/route?start=<id>&end=<id>")))))
+      
+      (let ([start (string->number (extract-binding/single 'start (request-bindings req)))]
+            [end   (string->number (extract-binding/single 'end (request-bindings req)))])
+        (response/xexpr
+         `(html
+           (head (title "ITINERARY"))
+           (body
+            (svg
+             ((viewBox "0 0 1920 1000"))
+             .,(append (graph-map g)
+                       (itinerary-map g (id-itinerary g start end))))))))))
+  
 
 ;; An example of a page returning HTML with xexprs and macros
 (define (display-page req)
