@@ -86,9 +86,8 @@
           )]
   ))
 
-;split-at lst pos
 
-(define (greedy g) ; g is a struct graph
+(define (greedy g ids) ; g is a struct graph
   (let* ([l (hash->list (graph-vx-ht g))])
   (cond
     [(null? l) '()]
@@ -97,6 +96,12 @@
           (map (lambda (a) (car a)) (greedy_aux (list fst snd) (remq fst (remq snd l)))))
           ]
   )))
+
+(define (recup_vertex g ids)
+  (list (map (lambda (a) (cons a (hash-set g a)))))
+  )
+
+
 
 
 
