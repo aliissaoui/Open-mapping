@@ -2,6 +2,7 @@
 
 (require "hash-graph.rkt")
 (require "make_graph.rkt")
+(require "voyageur_commerce.rkt")
 (provide (all-defined-out))
 ;;Retourne la liste de toutes les clés d'un graphe
 
@@ -32,8 +33,14 @@
 (define maxlon (second extremums))
 (define minlat (third extremums))
 (define minlon (fourth extremums))
+#|
 
-(display extremums)
+(define maxlat (max-lat g))
+(define maxlon (max-lon g))
+(define minlat (min-lat g))
+(define minlon (min-lon g))
+|#
+;;(display extremums)
 ;;convertir les coordonnees en format svr
 
 (define (convert-lat lat)
@@ -43,54 +50,62 @@
 (define (convert-lon lon)
   (* (/ (- minlon lon) (- minlon maxlon)) coef-lon))
 
-;;(convert-lat (vertex-lat (hash-ref (graph-vx-ht g3) 569851403)))
-;;(convert-lon (vertex-lon (hash-ref (graph-vx-ht g3) 569851403)))
-
 
 ;; Creer un cercle a partir d'un vertex
-(define circle-ray 5)
+(define circle-ray 3)
 
-(define (create-circle v)
+(define (create-circle color ray v)
   `(circle ((cx ,(number->string (exact->inexact (convert-lon (vertex-lon v)))))
             (cy ,(number->string (exact->inexact (convert-lat (vertex-lat v)))))
-            (r ,(number->string circle-ray)) (stroke "red") (fill "grey"))))
+            (r ,(number->string ray)) (stroke "red") (fill ,color))))
 
 ;;(create-circle v1)
 
 ;; Creer une ligne entre deux vertex
-(define (create-line v w)
+(define (create-line color v w)
   `(line ((x1 ,(number->string (exact->inexact (convert-lon (vertex-lon v)))))
           (y1 ,(number->string (exact->inexact (convert-lat (vertex-lat v)))))
           (x2 ,(number->string (exact->inexact (convert-lon (vertex-lon w)))))
           (y2 ,(number->string (exact->inexact (convert-lat (vertex-lat w)))))
-          (stroke "black"))))
+          (stroke ,color))))
 
 ;; Creer tous les cercles d'un graphe
 (define (graph-circles g)
-  (map create-circle (hash-values (graph-vx-ht g))))
+  (map ((curry create-circle) "grey" circle-ray) (hash-values (graph-vx-ht g))))
 
 ;; Retourne une liste des Vertexs voisins d'un vertex passe en parametre
 (define (vertex-neighbors g v)
   (map ((curry hash-ref) (graph-vx-ht g)) (vertex-way v)))
 
 ;; Creer les lignes entre un vertex et ses voisins
-(define (vertex-lines g v)
-  (map ((curry create-line) v) (vertex-neighbors g v)))
+(define (vertex-lines g color v )
+  (map ((curry create-line) color v) (vertex-neighbors g v)))
 
 ;; Creer toutes les lignes d'un graphe
 (define (graph-lines g)
-  (apply append (map ((curry vertex-lines) g) (hash-values (graph-vx-ht g)))))
+  (apply append (map ((curry vertex-lines) g "black") (hash-values (graph-vx-ht g)))))
 
 ;; Tous les cercles et toutes les lignes d'un graphe
 (define (graph-map g)
   (append (graph-circles g) (graph-lines g)))
 
+;; Les fonctions necessaires a la representation d'un itineraire.
+(define (itinerary-circles g list color)
+ (map ((curry create-circle) color 10) (map ((curry hash-ref) (graph-vx-ht g)) list)))
 
-#|
-(graph-circles g)
-(vertex-neighbors g v2)
-(vertex-lines g v2)
-(graph-lines g)
+(define (itinerary-lines g list color)
+  (let ([vx-list (doublet (map ((curry hash-ref) (graph-vx-ht g)) list))])
+  (map (lambda (x) (((curry create-line) color) (first x) (second x))) vx-list)))
 
-(graph-map g3)|#
-;;(graph-map g3)
+
+(define (itinerary-map g liste)
+  (append (itinerary-circles g liste "yellow") (itinerary-lines g liste "green")
+          (list (create-circle "blue" 15 (hash-ref (graph-vx-ht g) (first liste)))
+                (create-circle "brown" 15 (hash-ref (graph-vx-ht g) (first (reverse liste)))))))
+
+;; Representation d'un cycle
+
+(define (cycle-map g liste)
+  (let ([ids (greedy g liste)])
+  (append (itinerary-circles g ids "yellow") (itinerary-lines g ids "green")
+          (itinerary-circles g liste "blue"))))
