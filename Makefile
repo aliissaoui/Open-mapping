@@ -4,7 +4,9 @@ T=test
 
 .PHONY : server test
 
-server:
+build : server 
+
+server :
 	racket ${S}/server.rkt ${M}/pentagon.osm
 
 test :

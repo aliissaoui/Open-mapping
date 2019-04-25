@@ -2,6 +2,7 @@
 
 (require "hash-graph.rkt")
 (require "make_graph.rkt")
+(require "voyageur_commerce.rkt")
 (provide (all-defined-out))
 ;;Retourne la liste de toutes les clés d'un graphe
 
@@ -89,17 +90,22 @@
   (append (graph-circles g) (graph-lines g)))
 
 ;; Les fonctions necessaires a la representation d'un itineraire.
-(define (itinerary-circles g list)
- (map ((curry create-circle) "Yellow" 15) (map ((curry hash-ref) (graph-vx-ht g)) list)))
+(define (itinerary-circles g list color)
+ (map ((curry create-circle) color 10) (map ((curry hash-ref) (graph-vx-ht g)) list)))
 
-(define (itinerary-lines g list)
+(define (itinerary-lines g list color)
   (let ([vx-list (doublet (map ((curry hash-ref) (graph-vx-ht g)) list))])
-  (map (lambda (x) (((curry create-line) "yellow") (first x) (second x))) vx-list)))
+  (map (lambda (x) (((curry create-line) color) (first x) (second x))) vx-list)))
 
 
 (define (itinerary-map g liste)
-  (append (itinerary-circles g liste) (itinerary-lines g liste)
+  (append (itinerary-circles g liste "yellow") (itinerary-lines g liste "green")
           (list (create-circle "blue" 15 (hash-ref (graph-vx-ht g) (first liste)))
                 (create-circle "brown" 15 (hash-ref (graph-vx-ht g) (first (reverse liste)))))))
 
+;; Representation d'un cycle
 
+(define (cycle-map g liste)
+  (let ([ids (greedy g liste)])
+  (append (itinerary-circles g ids "yellow") (itinerary-lines g ids "green")
+          (itinerary-circles g liste "blue"))))

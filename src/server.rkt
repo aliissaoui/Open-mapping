@@ -36,7 +36,7 @@
         (if (not (= (length itinerary) 1))
             (response/xexpr
              `(html
-               (head (title "ITINERARY"))
+               (head (title "ITINERARY MAP"))
                (body
                 (svg
                  ((viewBox "0 0 1920 1000"))
@@ -48,6 +48,20 @@
                      (h1 ," Error777:  Disconnected Universe Error ")
                      (pre ,(format "~a" " Use connected ids with end != start")))))))))
   
+
+;;Showing the cycle between a liste of nodes given in the url
+
+(define (cycle req)
+  (let ([nodes (map string->number (string-split
+                (extract-binding/single 'nodes (request-bindings req)) ","))])
+  (response/xexpr
+   `(html
+     (head (title "CYCLE MAP"))
+     (body
+      (svg
+       ((viewBox "0 0 1920 1080"))
+       .,(append (graph-map g) (cycle-map g nodes))))))))
+
 
 ;; An example of a page returning HTML with xexprs and macros
 (define (display-page req)
@@ -64,7 +78,8 @@
 (define-values (server-dispatch server-url)
   (dispatch-rules
      [("display") display-page]
-     [("route") route] 
+     [("route") route]
+     [("cycle") cycle]
      [else main-page]))
 
 
