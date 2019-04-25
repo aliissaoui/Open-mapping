@@ -69,7 +69,7 @@
                     ;; Si on a trouvé le vertex on fait mark = result
              (cond  [(equal? (vertex-id v) (vertex-id w)) result]
                     ;; Si pas de chemin
-                    [(equal? mark depth) (list (vertex-id w))]
+                    [(equal? mark depth) (list (vertex-id w) (vertex-id w))]
                     ;; Si ( (car mark est l'id du vertex recherché c'est fini)
                     [(and (not (null? mark)) (= (car mark) (vertex-id w))) mark]
                     ;; si le vertex n'a jamais était visité on visite ces voisins

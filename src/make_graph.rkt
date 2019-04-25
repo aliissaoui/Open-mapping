@@ -17,7 +17,7 @@
 
 ;;(define flattenedFullOsm (flatten (osm->graph (vector-ref (current-command-line-arguments) 0))))
 (define flattenedFullOsm (let ([args (current-command-line-arguments)])
-                           (cond [(null? (vector->list args)) (flatten (osm->graph "maps/pentagon.osm"))]
+                           (cond [(null? (vector->list args)) (flatten (osm->graph "../maps/pentagon.osm"))]
                                  [else (flatten (osm->graph (vector-ref args 0)))])))
 
 (define (tuple-node graph)
@@ -87,7 +87,7 @@
 
 ;;;;; DISTANCE
 
-(define (distance lat lon) 1) ;; acts as a debug for now
+;;(define (distance lat lon) 1) ;; acts as a debug for now
 
 
 ;;;;;; REDUCE

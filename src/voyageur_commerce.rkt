@@ -1,7 +1,6 @@
 #lang racket
 (require xml)
 (require "hash-graph.rkt")
-(require "make_graph.rkt")
 (require "dijkstra.rkt")
 (provide (all-defined-out))
 
@@ -102,7 +101,7 @@
   )
 
 
-
+;;(greedy g '(6270202250 6270202257 6270202272 6270277022)) ;; Voici mon test ( test c'est le simple graphe défini dans hash-graph )
 
 
 
