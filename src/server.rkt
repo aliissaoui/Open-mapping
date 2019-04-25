@@ -7,6 +7,7 @@
 (require "hash-graph.rkt")
 (require "graph-map.rkt")
 (require "make_graph.rkt")
+(require "voyageur_commerce.rkt")
 
 ;; Showing only the map
 
