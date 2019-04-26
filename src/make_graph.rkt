@@ -87,7 +87,7 @@
 
 ;;;;; DISTANCE
 
-(define (distance lat lon) 1) ;; acts as a debug for now
+;;(define (distance lat lon) 1) ;; acts as a debug for now
 
 
 ;;;;;; REDUCE

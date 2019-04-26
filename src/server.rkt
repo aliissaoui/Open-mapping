@@ -7,7 +7,6 @@
 (require "hash-graph.rkt")
 (require "graph-map.rkt")
 (require "make_graph.rkt")
-(require "voyageur_commerce.rkt")
 
 ;; Showing only the map
 
@@ -33,7 +32,8 @@
       (let* ([start (string->number (extract-binding/single 'start (request-bindings req)))]
             [end   (string->number (extract-binding/single 'end (request-bindings req)))]
             [itinerary (id-itinerary g start end)])
-        (if (not (= (length itinerary) 1))
+        (display itinerary)
+        (if (not (and (= (length itinerary) 2) (= (first itinerary) (second itinerary))))
             (response/xexpr
              `(html
                (head (title "ITINERARY MAP"))
@@ -46,7 +46,7 @@
              `(html (head (title " Disconnected Universe"))
                     (body
                      (h1 ," Error777:  Disconnected Universe Error ")
-                     (pre ,(format "~a" " Use connected ids with end != start")))))))))
+                     (pre ,(format "~a" " Use connected ids")))))))))
   
 
 ;;Showing the cycle between a liste of nodes given in the url
