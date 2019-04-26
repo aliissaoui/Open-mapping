@@ -2,7 +2,6 @@
 (require xml)
 (require "hash-graph.rkt")
 (require "dijkstra.rkt")
-
 (provide (all-defined-out))
 
 (define (nearest_dist vx l mini_vx mini_dist)

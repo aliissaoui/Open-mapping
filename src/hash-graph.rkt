@@ -100,7 +100,7 @@
 (define (add-vertex g v)
   (hash-set! (graph-vx-ht g) (vertex-id v) v))
 
-;;(add-vertex test v10)
+(add-vertex test v10)
 ;;(display (graph-vx-ht g))
 ;;(vertex-way (hash-ref (graph-vx-ht g) 10))
 
