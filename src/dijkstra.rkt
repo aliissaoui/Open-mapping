@@ -2,31 +2,8 @@
 ;(require "make_graph.rkt")
 (define dmax (expt 10 10)) 
 
-(define ht (make-hash))
-
-(struct vertex (id lat lon way))
-(struct graph (vx-ht)) 
-
-(define v1 (vertex 1 3.2 4.7 '(2 3)))
-(define v2 (vertex 2 2.0 8.5 '(4 5 6 1)))
-(define v3 (vertex 3 1.5 9.1 '(7 8 1)))
-(define v4 (vertex 4 1.0 0.5 '(2)))
-(define v5 (vertex 5 5.2 8.4 '(9 2)))
-(define v6 (vertex 6 4.1 9.8 '(2)))
-(define v7 (vertex 7 14.0 2.4 '(3)))
-(define v8 (vertex 8 12.4 7.9 '(3)))
-(define v9 (vertex 9 13.8 2.1 '(5)))
-
-
-(hash-set! ht 1 v1)
-(hash-set! ht 2 v2)
-(hash-set! ht 3 v3)
-(hash-set! ht 4 v4)
-(hash-set! ht 5 v5)
-(hash-set! ht 6 v6)
-(hash-set! ht 7 v7)
-(hash-set! ht 8 v8)
-(hash-set! ht 9 v9)
+(require "hash-graph.rkt")
+(provide (all-defined-out))
 
 
 
@@ -56,7 +33,7 @@
 (haversine w v)
 |#
 
-(define (initial id_sommet liste_id_sommet l) ;d une liste initialement vide ; sommet est id ; liste_sommet est une liste des id des sommets du graph et l est donnée initialement vide
+(define (initial id_sommet liste_id_sommet l) ;d une liste initialement vide ; sommet est id ; liste_sommet est une liste des id des sommets du graph
   (match liste_id_sommet
     ['() l]
     [(cons v tail)
@@ -70,22 +47,22 @@
       [else (distance (cdr tab_dis) s)]
       ))
 
-(distance '((4 . 1000000000000000) (1 . 1000000000000000) (3 . 1000000000000000) (2 . 0)) 3)      
+;(distance '((4 . 1000000000000000) (1 . 1000000000000000) (3 . 1000000000000000) (2 . 0)) 2)      
 
 
-#|(define v (vertex 2 5 1 '(5 6)))
+(define v (vertex 2 5 1 '(5 6)))
 (define w (vertex 3 0 9 '(2 6)))
 (define t (vertex 1 8 1 '(5 6)))
 (define z (vertex 4 7 9 '(9 6)))
 (define l (list v w z t))
 (define l1 '(2 3 1 4))
 (define d '())
-|#
-;(initial 2 l1 '())
+
+;;(initial 2 l1 '())
 
 
-(define (data id gr)              
-  (hash-ref (graph-vx-ht gr) id)) 
+;;(define (data id gr)              
+  ;;(hash-ref (graph-vx-ht gr) id)) 
 
 ;(vertex-way (hash-ref (graph-vx-ht g) 2)) 
 
@@ -97,7 +74,7 @@
         )
   )
 
-;(min_dis l v 100000000000000000 w)
+;;(min_dis l v 100000000000000000 w)
 
 
 (define (maj_tab_dis s d dis)                                                ;met à jour le tableau des distances
@@ -113,6 +90,7 @@
       (lambda ( L ) ( if ( eq? (cadr L) s2 ) (list s1 s2) L ) )pred ))
 
 
+<<<<<<< HEAD
 (define pred '((1 2)(2 4)(3 7)(4 2)(5 9)(6 2)(7 3)(8 3)(9 5)))
 ;(maj_pred2 pred 5 7)
 
@@ -122,21 +100,25 @@
 (define s4 (vertex 3 0 9 '(2 6)))
 (define s5 (vertex 1 8 1 '(5 6)))
 |#
+=======
+;;(define pred '((v1 v2) (v2 v3) (v3 v4) (v5 v6) (v6 v7) (v7 v8) (v8 v9)))
+>>>>>>> 8448f2d91b285b1e186811c461c780e1f74d5907
 
 
 #|
 (define (maj_distance sdep s1 s2 pred dis)                                  ;met à jour la valeur de la distance et le predecesseur
+<<<<<<< HEAD
   (if (> ((distance dis s2) (+ (distance dis s1) (haversine (hash-ref (graph-vx-ht g) s2) (hash-ref (graph-vx-ht g) s1))))) ;; il faut faire en sorte que seul le vertex soit recupéré en entier
+=======
+  (if (> ((distance dis s2) (+ (distance dis s1) (haversine s2 s1))))
+>>>>>>> 8448f2d91b285b1e186811c461c780e1f74d5907
      (cons (maj_tab_dis s2 (+ (haversine sdep s2) (haversine s2 s1)) dis)
            (maj_pred s1 s2))
   (cons dis pred))
   )
 
-(maj_distance 1 9 1 pred liste_double)
-
 (define (maj_dis_voisin sdep s1 lv pred dis)
-  (foldl (lambda(x) (maj_distance sdep s1 x pred dis)) lv))     
-
+  (foldl (maj_distance sdep s1 pred dis) lv))     
 
 (define (dijkstra-loop q dis pred sdep)                                        ;q contient initialement la liste des id de tous les sommets
   (if (null? q)
@@ -164,6 +146,18 @@
 
 
 
+  
+  
+  
+  
+    
+    
+  
+  
+  
+
+
+
 
 Dijkstra(G,Poids,sdeb)
 1 Initialisation(G,sdeb)
@@ -178,6 +172,9 @@ Dijkstra(G,Poids,sdeb)
 
 |#
 
+
+
+  
 
 
 
