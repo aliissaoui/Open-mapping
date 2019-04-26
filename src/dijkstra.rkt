@@ -1,7 +1,6 @@
 #lang racket
 (define dmax (expt 10 10)) 
 
-<<<<<<< HEAD
 (define ht (make-hash))
 
 (struct vertex (id lat lon way))
@@ -27,10 +26,6 @@
 (hash-set! ht 7 v7)
 (hash-set! ht 8 v8)
 (hash-set! ht 9 v9)
-=======
-(require "hash-graph.rkt")
-(provide (all-defined-out))
->>>>>>> 7bdc334affb1588b10e1b51b14757ef1adf97b31
 
 
 
@@ -84,17 +79,12 @@
 (define l (list v w z t))
 (define l1 '(2 3 1 4))
 (define d '())
-<<<<<<< HEAD
 |#
 ;(initial 2 l1 '())
-=======
-
-;;(initial 2 l1 '())
->>>>>>> 7bdc334affb1588b10e1b51b14757ef1adf97b31
 
 
-;;(define (data id gr)              
-  ;;(hash-ref (graph-vx-ht gr) id)) 
+(define (data id gr)              
+  (hash-ref (graph-vx-ht gr) id)) 
 
 ;(vertex-way (hash-ref (graph-vx-ht g) 2)) 
 
@@ -106,11 +96,7 @@
         )
   )
 
-<<<<<<< HEAD
 ;(min_dis l v 100000000000000000 w)
-=======
-;;(min_dis l v 100000000000000000 w)
->>>>>>> 7bdc334affb1588b10e1b51b14757ef1adf97b31
 
 
 (define (maj_tab_dis s d dis)                                                ;met à jour le tableau des distances
@@ -127,16 +113,12 @@
         [else (maj_pred (cdr pred) s1 s2)])
         pred)
 
-<<<<<<< HEAD
 (define pred '((1 2)(2 4)(3 7)(4 2)(5 9)(6 2)(7 3)(8 3)(9 5)))
 ;(maj_pred pred 5 7)
-=======
-;;(define pred '((v1 v2) (v2 v3) (v3 v4) (v5 v6) (v6 v7) (v7 v8) (v8 v9)))
->>>>>>> 7bdc334affb1588b10e1b51b14757ef1adf97b31
 
 
 #|(define (maj_distance sdep s1 s2 pred dis)                                  ;met à jour la valeur de la distance et le predecesseur
-  (if (> ((distance dis s2) (+ (distance dis s1) (haversine s2 s1)))) ;; il faut faire en sorte que seul le vertex soit recupéré en entier
+  (if (> ((distance dis s2) (+ (distance dis s1) (haversine (hash-ref (graph-vx-ht g) s2) (hash-ref (graph-vx-ht g) s1))))) ;; il faut faire en sorte que seul le vertex soit recupéré en entier
      (cons (maj_tab_dis s2 (+ (haversine sdep s2) (haversine s2 s1)) dis)
            (maj_pred s1 s2))
   (cons dis pred))
