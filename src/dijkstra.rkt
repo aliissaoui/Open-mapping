@@ -90,6 +90,7 @@
       (lambda ( L ) ( if ( eq? (cadr L) s2 ) (list s1 s2) L ) )pred ))
 
 
+<<<<<<< HEAD
 
 (define pred '((1 2)(2 4)(3 7)(4 2)(5 9)(6 2)(7 3)(8 3)(9 5)))
 ;(maj_pred2 pred 5 7)
@@ -103,8 +104,16 @@
 
 ;;(define pred '((v1 v2) (v2 v3) (v3 v4) (v5 v6) (v6 v7) (v7 v8) (v8 v9)))
 
+=======
 
 
+#|
+;;(define (maj_distance sdep s1 s2 pred dis)                                  ;met à jour la valeur de la distance et le predecesseur
+>>>>>>> 17b9656c9c44aa098bf49ee999f2df24a6f61729
+
+;;  (if (> ((distance dis s2) (+ (distance dis s1) (haversine (hash-ref (graph-vx-ht g) s2) (hash-ref (graph-vx-ht g) s1))))) ;; il faut faire en;; sorte que seul le vertex soit recupéré en entier
+
+<<<<<<< HEAD
 #|
 (define (maj_distance sdep s1 s2 pred dis)                                  ;met à jour la valeur de la distance et le predecesseur
 
@@ -116,6 +125,14 @@
            (maj_pred s1 s2))
   (cons dis pred))
   )
+=======
+;;  (if (> ((distance dis s2) (+ (distance dis s1) (haversine s2 s1))))
+;
+ ;;    (cons (maj_tab_dis s2 (+ (haversine sdep s2) (haversine s2 s1)) dis)
+  ;;         (maj_pred s1 s2))
+  ;;(cons dis pred))
+ ;; )
+>>>>>>> 17b9656c9c44aa098bf49ee999f2df24a6f61729
 
 (define (maj_dis_voisin sdep s1 lv pred dis)
   (foldl (maj_distance sdep s1 pred dis) lv))     
