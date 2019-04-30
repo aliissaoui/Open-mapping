@@ -1,6 +1,7 @@
 #lang racket
 (require "hash-graph.rkt")
 (require "make_graph.rkt")
+(provide (all-defined-out))
 (define dmax (expt 10 10)) 
 
 
