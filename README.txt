@@ -13,12 +13,18 @@ Simple map:
 Itinerary:
 	  http://localhost:9000/route?start=<id>&end=<id>
 
+cycle:
+	  http://localhost:9000/cycle?nodes=<id,...,id>
+
 Examples:
 	Itinerary connected vertexes:
 		    http://localhost:9000/route?start=392014874&end=392015296
 
 	Itinerary deconnected universe:
 		    http://localhost:9000/route?start=645727111&end=645727111
+
+	cycle:
+		    http://localhost:9000/cycle?nodes=5297614183,645731557,3520831242,569691668
 
 Tests:
 	make test to execute the tests
