@@ -2,6 +2,7 @@
 (require racket/trace)
 (require "hash-graph.rkt")
 (require "make_graph.rkt")
+(provide (all-defined-out))
 
 (define (difference_latitude_deg s1 s2) ;; d1
   (* (- (vertex-lat s2) (vertex-lat s1)) 0.017) 
@@ -86,4 +87,4 @@
         (cons w2 (find-way dis v (cdr w2))))))
 
 (define (dijkstra-way g v w)
-  (reverse (cons (list 0 w) (find-way (Dijkstra g v) v w))))
+  (reverse (cons (cons 0 w) (find-way (Dijkstra g v) v w))))
