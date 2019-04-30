@@ -103,13 +103,15 @@
 ;(define pred '((1 1)(2 5)(3 7)(4 2)(5 2)(6 2)(7 3)(8 3)(9 10)(10 9)))
 
 
-(define (maj_distance sdep s1 s2 pred dis)                                  ;met à jour la valeur de la distance et le predecesseur
+(define (maj_distance sdep s1 s2 pred dis)                                  ;met à jour la valeur de la distance et le predecesse
 
-  (if (> (distance dis s2) (+ (distance dis s1) (haversine (hash-ref (graph-vx-ht test) s2) (hash-ref (graph-vx-ht test) s1)))) ;; il faut faire en sorte que seul le vertex soit recupéré en entier
-      
-  ;(if (> ((distance dis s2) (+ (distance dis s1) (haversine s2 s1))))
-
-      (cons (maj_tab_dis s2 (+ (haversine (hash-ref (graph-vx-ht test) sdep) (hash-ref (graph-vx-ht test) s2)) (haversine (hash-ref (graph-vx-ht test) s2) (hash-ref (graph-vx-ht test) s1))) dis)
+  (if (> (distance dis s2) (+ (distance dis s1)
+                              (haversine (hash-ref (graph-vx-ht test) s2)
+                                         (hash-ref (graph-vx-ht test) s1)))) ;; il faut faire en sorte que seul le vertex soit recupéré en entier
+      (cons (maj_tab_dis s2 (+ (haversine (hash-ref (graph-vx-ht test) sdep)
+                                          (hash-ref (graph-vx-ht test) s2))
+                               (haversine (hash-ref (graph-vx-ht test) s2)
+                                          (hash-ref (graph-vx-ht test) s1))) dis)
             (maj_pred2 s1 s2))
       (cons dis pred))
   )
@@ -121,6 +123,13 @@
 (maj_distance 1 3 4 pred dis)
 |#
 
+
+;;  (if (> ((distance dis s2) (+ (distance dis s1) (haversine s2 s1))))
+;
+ ;;    (cons (maj_tab_dis s2 (+ (haversine sdep s2) (haversine s2 s1)) dis)
+  ;;         (maj_pred s1 s2))
+  ;;(cons dis pred))
+ ;; )
 
 (define (maj_dis_voisin sdep s1 lv pred dis)
   (foldl (maj_distance sdep s1 pred dis) lv))     
