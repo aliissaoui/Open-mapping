@@ -3,6 +3,7 @@
 (require "hash-graph.rkt")
 (require "make_graph.rkt")
 (require "voyageur_commerce.rkt")
+
 (provide (all-defined-out))
 ;;Retourne la liste de toutes les clés d'un graphe
 
@@ -102,6 +103,13 @@
   (append (itinerary-circles g liste "yellow") (itinerary-lines g liste "green")
           (list (create-circle "blue" 15 (hash-ref (graph-vx-ht g) (first liste)))
                 (create-circle "brown" 15 (hash-ref (graph-vx-ht g) (first (reverse liste)))))))
+
+;;Representation du chemin minimal
+(define (dijkstra-map g ids)
+    (append (itinerary-circles g ids "brown") (itinerary-lines g ids "blue")
+            (list (create-circle "blue" 15 (hash-ref (graph-vx-ht g) (first ids)))
+                  (create-circle "red" 15 (hash-ref (graph-vx-ht g) (first (reverse ids)))))))
+
 
 ;; Representation d'un cycle
 

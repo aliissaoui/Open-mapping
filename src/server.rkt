@@ -7,6 +7,7 @@
 (require "hash-graph.rkt")
 (require "graph-map.rkt")
 (require "make_graph.rkt")
+(require "new_dijkstra.rkt")
 
 ;; Showing only the map
 
@@ -47,6 +48,33 @@
                     (body
                      (h1 ," Error777:  Disconnected Universe Error ")
                      (pre ,(format "~a" " Use connected ids")))))))))
+
+(define (distance req)
+  (if (null? (request-bindings req))
+      (response/xexpr
+       `(html (head (title "NO IDs"))
+              (body
+               (h1 ," Error666: Please enter start and end ids ")
+               (pre ,(format "~a" " Use : http://localhost:9000/distance?start=<id>&end=<id>")))))
+      
+      (let* ([start (string->number (extract-binding/single 'start (request-bindings req)))]
+            [end   (string->number (extract-binding/single 'end (request-bindings req)))]
+            [itinerary (map cdr (dijkstra-way g start end))])
+        (display itinerary)
+        (if (not (and (= (length itinerary) 2) (= (first itinerary) (second itinerary))))
+            (response/xexpr
+             `(html
+               (head (title "OPTIMAL ITINERARY"))
+               (body
+                (svg
+                 ((viewBox "0 0 1920 1000"))
+                 .,(append (graph-map g)
+                           (dijkstra-map g itinerary))))))
+            (response/xexpr
+             `(html (head (title " Disconnected Universe"))
+                    (body
+                     (h1 ," Error777:  Disconnected Universe Error ")
+                     (pre ,(format "~a" " Use connected ids")))))))))
   
 
 ;;Showing the cycle between a liste of nodes given in the url
@@ -79,6 +107,7 @@
   (dispatch-rules
      [("display") display-page]
      [("route") route]
+     [("distance") distance]
      [("cycle") cycle]
      [else main-page]))
 
