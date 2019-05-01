@@ -58,10 +58,9 @@
                (pre ,(format "~a" " Use : http://localhost:9000/distance?start=<id>&end=<id>")))))
       
       (let* ([start (string->number (extract-binding/single 'start (request-bindings req)))]
-            [end   (string->number (extract-binding/single 'end (request-bindings req)))]
-            [itinerary (map cdr (dijkstra-way g start end))])
-        (display itinerary)
-        (if (not (and (= (length itinerary) 2) (= (first itinerary) (second itinerary))))
+             [end   (string->number (extract-binding/single 'end (request-bindings req)))]
+             [way (dijkstra-way g start end)])
+        (if (not (and (= (length way) 2) (= (first way) (second way))))
             (response/xexpr
              `(html
                (head (title "OPTIMAL ITINERARY"))
@@ -69,7 +68,7 @@
                 (svg
                  ((viewBox "0 0 1920 1000"))
                  .,(append (graph-map g)
-                           (dijkstra-map g itinerary))))))
+                           (dijkstra-map g way))))))
             (response/xexpr
              `(html (head (title " Disconnected Universe"))
                     (body

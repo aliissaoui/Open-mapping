@@ -70,6 +70,15 @@
           (y2 ,(number->string (exact->inexact (convert-lat (vertex-lat w)))))
           (stroke ,color))))
 
+;;Ecrit un texte dans une position donnée
+(define (display-distance msg x1 y1)
+  `(text ((x ,(number->string x1))
+          (y ,(number->string y1))
+          (font-family "Verdana")
+          (fill="brown")
+          (font-size "20"))
+          ,msg))
+
 ;; Creer tous les cercles d'un graphe
 (define (graph-circles g)
   (map ((curry create-circle) "grey" circle-ray) (hash-values (graph-vx-ht g))))
@@ -104,13 +113,25 @@
           (list (create-circle "blue" 15 (hash-ref (graph-vx-ht g) (first liste)))
                 (create-circle "brown" 15 (hash-ref (graph-vx-ht g) (first (reverse liste)))))))
 
+(define (itinerary-distances g way)
+  (map (lambda (x)
+         (let ([v (hash-ref (graph-vx-ht g) (car x))])
+               (display-distance (real->decimal-string (cdr x) 2)
+                                 (- (convert-lon (vertex-lon v)) 20)
+                                 (- (convert-lat (vertex-lat v)) 20) ))) way))
+
 ;;Representation du chemin minimal
-(define (dijkstra-map g ids)
+(define (dijkstra-map g way)
+  (let* ([ids (map car way)]
+        [first (hash-ref (graph-vx-ht g) (first ids))]
+        [last (hash-ref (graph-vx-ht g) (last ids))])
     (append (itinerary-circles g ids "brown") (itinerary-lines g ids "blue")
-            (list (create-circle "blue" 15 (hash-ref (graph-vx-ht g) (first ids)))
-                  (create-circle "red" 15 (hash-ref (graph-vx-ht g) (first (reverse ids)))))))
+            (list (create-circle "blue" 15 first)
+                  (create-circle "red" 15 last))
+            (itinerary-distances g way))))
+            ;;(display-distance  "first" (convert-lon (vertex-lon last)) (convert-lat (vertex-lat last))))))
 
-
+ 
 ;; Representation d'un cycle
 
 (define (cycle-map g liste)

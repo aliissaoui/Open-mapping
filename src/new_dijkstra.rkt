@@ -75,16 +75,19 @@
         (maj-vertex g min distances)
         (Dijkstra-loop g min distances (remove min Q)))))
 
-(define (Dijkstra g start)
+(define (Dijkstra g start Q)
   (let ([start-vx (hash-ref (graph-vx-ht g) start)])
-    (Dijkstra-loop g (vertex-id start-vx) (initialize g (vertex-id start-vx)) (depth-first-1 g start-vx '()))))
+    (Dijkstra-loop g (vertex-id start-vx) (initialize g (vertex-id start-vx)) Q)))
 
-
+;;(Dijkstra g 392014874)
 (define (find-way dis v w)
   (if (= v w)
-      '()
+      (cons (cons v (car (hash-ref dis w))) '())
       (let ([w2 (hash-ref dis w)])
-        (cons w2 (find-way dis v (cdr w2))))))
+        (cons (cons w (car w2)) (find-way dis v (cdr w2))))))
 
 (define (dijkstra-way g v w)
-  (reverse (cons (cons 0 w) (find-way (Dijkstra g v) v w))))
+  (let ([Q (depth-first-1 g (hash-ref (graph-vx-ht g) v) '())])
+    (if (not (member? Q w))
+        (list w w)
+        (reverse (find-way (Dijkstra g v Q) v w)))))
