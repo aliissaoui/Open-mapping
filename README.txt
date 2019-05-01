@@ -13,14 +13,17 @@ Simple map:
 Itinerary:
 	  http://localhost:9000/route?start=<id>&end=<id>
 
+Distance:
+	  http://localhost:9000/distance?start=<id>&end=<id>
+
 cycle:
 	  http://localhost:9000/cycle?nodes=<id,...,id>
 
 Examples:
-	Itinerary connected vertexes:
+	Itinerary connected vertexes: ( works also with distance )
 		    http://localhost:9000/route?start=392014874&end=392015296
 
-	Itinerary deconnected universe:
+	Itinerary deconnected universe:  ( works also with distance )
 		    http://localhost:9000/route?start=645727111&end=645727111
 
 	cycle:
@@ -32,9 +35,3 @@ Tests:
 clean:
 
 	make clean to clean the directories
-
-
-Questions:
-
-	- are we going to show the distance
-	- idea: if no itinerary return (v v) , if (car == cadr) disconnect.
