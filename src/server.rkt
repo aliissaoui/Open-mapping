@@ -18,7 +18,13 @@
      (body
       (svg
        ((viewBox "0 0 1920 1080"))
-       .,(graph-map g))))))
+       .,(append (graph-map g g2)
+                 `((text ((x ,"100")
+                                    (y ,"50")
+                                    (font-family "Verdana")
+                                    (fill="red")
+                                    (font-size "50"))
+                                   "Welcome to Open Mapping Service"))))))))
 
 ;;Showing the itinerary between two vertexes given in the url 
 
@@ -32,7 +38,7 @@
       
       (let* ([start (string->number (extract-binding/single 'start (request-bindings req)))]
             [end   (string->number (extract-binding/single 'end (request-bindings req)))]
-            [itinerary (id-itinerary g start end)])
+            [itinerary (id-itinerary g2 start end)])
         (display itinerary)
         (if (not (and (= (length itinerary) 2) (= (first itinerary) (second itinerary))))
             (response/xexpr
@@ -41,8 +47,14 @@
                (body
                 (svg
                  ((viewBox "0 0 1920 1000"))
-                 .,(append (graph-map g)
-                           (itinerary-map g itinerary))))))
+                 .,(append (graph-map g g2)
+                           (itinerary-map g2 itinerary)
+                           `((text ((x ,"100")
+                                    (y ,"50")
+                                    (font-family "Verdana")
+                                    (fill="red")
+                                    (font-size "50"))
+                                   "Itinerary by Open Mapping Service")))))))
             (response/xexpr
              `(html (head (title " Disconnected Universe"))
                     (body
@@ -67,8 +79,14 @@
                (body
                 (svg
                  ((viewBox "0 0 1920 1000"))
-                 .,(append (graph-map g)
-                           (dijkstra-map g way))))))
+                 .,(append (graph-map g g2)
+                           (dijkstra-map g2 way)
+                           `((text ((x ,"100")
+                                    (y ,"50")
+                                    (font-family "Verdana")
+                                    (fill="red")
+                                    (font-size "50"))
+                                   "Optimal Itinerary by Open Mapping Service")))))))
             (response/xexpr
              `(html (head (title " Disconnected Universe"))
                     (body

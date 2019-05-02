@@ -70,6 +70,14 @@
           (y2 ,(number->string (exact->inexact (convert-lat (vertex-lat w)))))
           (stroke ,color))))
 
+(define (create-itinerary-line color v w)
+  `(line ((x1 ,(number->string (exact->inexact (convert-lon (vertex-lon v)))))
+          (y1 ,(number->string (exact->inexact (convert-lat (vertex-lat v)))))
+          (x2 ,(number->string (exact->inexact (convert-lon (vertex-lon w)))))
+          (y2 ,(number->string (exact->inexact (convert-lat (vertex-lat w)))))
+          (stroke ,color)
+          (stroke-width "5"))))
+
 ;;Ecrit un texte dans une position donnée
 (define (display-distance msg x1 y1)
   `(text ((x ,(number->string x1))
@@ -96,8 +104,8 @@
   (apply append (map ((curry vertex-lines) g "black") (hash-values (graph-vx-ht g)))))
 
 ;; Tous les cercles et toutes les lignes d'un graphe
-(define (graph-map g)
-  (append (graph-circles g) (graph-lines g)))
+(define (graph-map g g-not-red)
+  (append (graph-circles g) (graph-lines g-not-red)))
 
 ;; Les fonctions necessaires a la representation d'un itineraire.
 (define (itinerary-circles g list color)
@@ -105,11 +113,12 @@
 
 (define (itinerary-lines g list color)
   (let ([vx-list (doublet (map ((curry hash-ref) (graph-vx-ht g)) list))])
-  (map (lambda (x) (((curry create-line) color) (first x) (second x))) vx-list)))
+  (map (lambda (x) (((curry create-itinerary-line) color) (first x) (second x))) vx-list)))
 
 
 (define (itinerary-map g liste)
-  (append (itinerary-circles g liste "yellow") (itinerary-lines g liste "green")
+  (append (itinerary-lines g liste "green")
+  ;;(itinerary-circles g liste "yellow")        
           (list (create-circle "blue" 15 (hash-ref (graph-vx-ht g) (first liste)))
                 (create-circle "brown" 15 (hash-ref (graph-vx-ht g) (first (reverse liste)))))))
 
@@ -125,10 +134,11 @@
   (let* ([ids (map car way)]
         [first (hash-ref (graph-vx-ht g) (first ids))]
         [last (hash-ref (graph-vx-ht g) (last ids))])
-    (append (itinerary-circles g ids "brown") (itinerary-lines g ids "blue")
-            (list (create-circle "blue" 15 first)
-                  (create-circle "red" 15 last))
-            (itinerary-distances g way))))
+    ;;(append (itinerary-circles g ids "brown") (itinerary-lines g ids "blue")
+     (append (itinerary-lines g ids "blue")
+             (list (create-circle "blue" 15 first)
+                   (create-circle "red" 15 last))
+             (itinerary-distances g way))))
             ;;(display-distance  "first" (convert-lon (vertex-lon last)) (convert-lat (vertex-lat last))))))
 
  

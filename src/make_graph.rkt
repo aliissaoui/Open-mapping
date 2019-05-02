@@ -113,6 +113,7 @@
 
 
 (define g (graph (reduce (make-graph (list-node flattenedFullOsm) (list-way flattenedFullOsm)))))
+(define g2 (graph (make-graph (list-node flattenedFullOsm) (list-way flattenedFullOsm))))
 ;;(define g2 (graph (reduce (make-graph (list-node flattenedOsm) (list-way flattenedOsm)))))
 
 #|
