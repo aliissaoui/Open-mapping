@@ -5,6 +5,8 @@
 (require "haversine.rkt")
 (provide (all-defined-out))
 
+
+;;generer la table de hashage à partir avec les distance initialiser à 10000 
 (define (initialize g start)
   (define h (make-hash))
   (map (lambda (x) (hash-set! h (car x) (cons (cdr x) (car x)))) 
@@ -21,7 +23,7 @@
   (cond [(null? l) #f]
         [(= x (car l)) #t]
         [else (member? (cdr l) x)]))
-
+;;retourne le noeud le plaus proche de depart
 (define (find-min distances Q)
   (let* ([d-list1 (hash->list distances)]
          [d-list (filter
@@ -33,13 +35,11 @@
 
 ;;dis is a hash table : (key : distance)
 (define (change-dis-pred distances w dis pred)
-  ;;(display distances)
   (hash-remove! distances w)
   (hash-set! distances w (cons dis pred)))
 
-
+;;mis à jour les distances des neuds dans la table de hashage  
 (define (maj-distances g v w distances)
-  ;;;(display distances)
   (let* ([poids (haversine (hash-ref (graph-vx-ht g) v) (hash-ref (graph-vx-ht g) w))]
          [d1 (car (hash-ref distances v))]
          [d2 (car (hash-ref distances w))])
@@ -47,11 +47,11 @@
           [else distances]))
   distances) 
 
-
+;;mis à jour le champs distance de tous les voisins  
 (define (maj-vertex g v q)
   (last (map (lambda (x) (maj-distances g v x q)) (vertex-way (hash-ref (graph-vx-ht g) v)))))
 
-
+;;la boucle de l'algorithme 
 (define (Dijkstra-loop g start distances Q)
   (if (null? Q)
       distances
@@ -63,7 +63,7 @@
   (let ([start-vx (hash-ref (graph-vx-ht g) start)])
     (Dijkstra-loop g (vertex-id start-vx) (initialize g (vertex-id start-vx)) Q)))
 
-;;(Dijkstra g 392014874)
+
 (define (find-way dis v w)
   (if (= v w)
       (cons (cons v (car (hash-ref dis w))) '())

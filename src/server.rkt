@@ -60,7 +60,7 @@
                     (body
                      (h1 ," Error777:  Disconnected Universe Error ")
                      (pre ,(format "~a" " Use connected ids")))))))))
-
+;;affiche l'itineraire fournie par dijkstra 
 (define (distance req)
   (if (null? (request-bindings req))
       (response/xexpr
@@ -120,6 +120,7 @@
 ;; Routing function
 ;;     /display          --->   display-page
 ;;     everything else   --->   main-page
+
 (define-values (server-dispatch server-url)
   (dispatch-rules
      [("display") display-page]

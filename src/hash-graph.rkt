@@ -6,7 +6,7 @@
 (define coef-lat 1080)
 (define coef-lon 1920)
 
-
+;;definition - creation de table de hashage
 (define ht (make-hash))
 
 (struct vertex (id lat lon way))
@@ -59,12 +59,6 @@
 (define (itinerary g v w depth mark result)
   (let ([mark (set-add mark (vertex-id v))]
         [result (cons (vertex-id v) result)])
-    #|(display "\nway :")
-    (display (vertex-way v))
-    (display "\nmark: ")
-    (display mark)
-    (display "\nresult")
-    (display result)|#
     (foldl (lambda (actual mark)
                     ;; Si on a trouvé le vertex on fait mark = result
              (cond  [(equal? (vertex-id v) (vertex-id w)) result]
@@ -79,18 +73,12 @@
                     ;; Sinon on ajoute le vertex actuel à la liste des vertex marqués
                     [else (inverse (set-add (inverse mark) actual))])) mark (vertex-way v))))
 
-
+;;retrouve l'itineraire dans un graphe à partir de deux id
 (define (id-itinerary g v-id w-id )
   (inverse (itinerary g (hash-ref (graph-vx-ht g) v-id)
                         (hash-ref (graph-vx-ht g) w-id)
                         (depth-first g v-id)
                          '() '())))
-
-;;(trace depth-first-1)
-;;(trace itinerary)
-;;(inverse (depth-first-1 test v1 '() ))
-;;(inverse (itinerary test v1 v12 (depth-first test v1) '() '()))
-
 
 ;;Creates a vertex
 (define (create-vertex id lat lon way)
@@ -101,6 +89,3 @@
   (hash-set! (graph-vx-ht g) (vertex-id v) v))
 
 (add-vertex test v10)
-;;(display (graph-vx-ht g))
-;;(vertex-way (hash-ref (graph-vx-ht g) 10))
-

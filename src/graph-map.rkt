@@ -27,21 +27,14 @@
 
 (define (min-lat g)
   (apply min (list-lat g)))
-
+;;les extremums donnés par le fichier OSM
 (define extremums (box flattenedFullOsm))
 
 (define maxlat (first extremums))
 (define maxlon (second extremums))
 (define minlat (third extremums))
 (define minlon (fourth extremums))
-#|
 
-(define maxlat (max-lat g))
-(define maxlon (max-lon g))
-(define minlat (min-lat g))
-(define minlon (min-lon g))
-|#
-;;(display extremums)
 ;;convertir les coordonnees en format svr
 
 (define (convert-lat lat)
@@ -69,7 +62,7 @@
           (x2 ,(number->string (exact->inexact (convert-lon (vertex-lon w)))))
           (y2 ,(number->string (exact->inexact (convert-lat (vertex-lat w)))))
           (stroke ,color))))
-
+;;Creer des ligne plus epaisses pour representer l'itineraire 
 (define (create-itinerary-line color v w)
   `(line ((x1 ,(number->string (exact->inexact (convert-lon (vertex-lon v)))))
           (y1 ,(number->string (exact->inexact (convert-lat (vertex-lat v)))))
@@ -117,8 +110,7 @@
 
 
 (define (itinerary-map g liste)
-  (append (itinerary-lines g liste "green")
-  ;;(itinerary-circles g liste "yellow")        
+  (append (itinerary-lines g liste "green")        
           (list (create-circle "blue" 15 (hash-ref (graph-vx-ht g) (first liste)))
                 (create-circle "brown" 15 (hash-ref (graph-vx-ht g) (first (reverse liste)))))))
 
@@ -134,13 +126,11 @@
   (let* ([ids (map car way)]
         [first (hash-ref (graph-vx-ht g) (first ids))]
         [last (hash-ref (graph-vx-ht g) (last ids))])
-    ;;(append (itinerary-circles g ids "brown") (itinerary-lines g ids "blue")
      (append (itinerary-lines g ids "blue")
              (list (create-circle "blue" 15 first)
                    (create-circle "red" 15 last))
              (itinerary-distances g way))))
-            ;;(display-distance  "first" (convert-lon (vertex-lon last)) (convert-lat (vertex-lat last))))))
-
+            
  
 ;; Representation d'un cycle
 
