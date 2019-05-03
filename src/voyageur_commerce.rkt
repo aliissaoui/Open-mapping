@@ -1,6 +1,7 @@
 #lang racket
 (require xml)
 (require "hash-graph.rkt")
+(require "haversine.rkt")
 (require "dijkstra.rkt")
 (provide (all-defined-out))
 

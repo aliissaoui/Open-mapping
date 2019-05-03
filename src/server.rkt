@@ -7,7 +7,7 @@
 (require "hash-graph.rkt")
 (require "graph-map.rkt")
 (require "make_graph.rkt")
-(require "new_dijkstra.rkt")
+(require "dijkstra.rkt")
 
 ;; Showing only the map
 
