@@ -69,7 +69,7 @@ Les principales tâches qui ont aiguillé notre projet sont les suivantes : \new
 \item Pondération du graphe
 \item Exploitation du graphe (1) : calcul d’un itinéraire entre deux sommets, extraction du plus court chemin 
 \item Exploitation du graphe (2) : calcul du cycle de longueur minimale (problème du voyageur de commerce) 
-\item Réalisation d’un serveur HTTP 
+\item Affichage des maps dans un serveur HTTP à l'aide du conteneur SVG.
 \end{itemize}
 
 
@@ -91,8 +91,8 @@ Dans le projet, le choix de la structure de graph se prêtait naturellement à l
 \footnote{lien vers la documentation Racket du Hash Table mentionnant la complexité: $https://docs.racket-lang.org/reference/hashtables.html$}.
 
 \section{Explication des algorithmes et des implémentations choisies}
-\subsection{Hash-graph} 
-La fonction \textit{{c}reate-vertex()} sert à créer à partir d'un identifiant \textit{id}, des coordonnées \textit{lat} et \textit{lon} et la liste des voisins \textit{way} un sommet. La fonction \textbf{add-vertex()} sert à ajouter un sommet à un graph. A noter que chaque sommet dans le graph dispose d'un id unique.    
+\subsection{Le graphe} 
+La fonction \textit{{c}reate-vertex()} sert à créer à partir d'un identifiant \textit{id}, des coordonnées \textit{lat} et \textit{lon} et la liste des voisins \textit{way} un sommet. La fonction \textbf{add-vertex()} sert à ajouter un sommet à un graph. A noter que chaque sommet dans le graph dispose d'un id unique, et qu'il reste beaucoup de fonctions basiques de traitement du graphe spécifiques à chaque fichier source.
 \subsection{Passage de l'Osm au graph} 
 Cette partie explique le processus permettant de passer d'un fichier osm à un graphe. Tout d'abord, l'importation du fichier osm sous Racket conserve certaines normes de paranthésages qui nous ont semblé obsolètes pour les raisons suivantes: notre but étant d'extraire les noeuds sous forme de vecteur \textbf{(identifiant longitude lattitude liste:(voisin 1 voisin 2 ...))}, on a remarqué que les trois premières informations étaient toujours précédées du mot-clé \say{node} quand à la dernière information, elle était précédée de \say{way}. Ainsi, il suffisait d'abord d'effecteur un $flatten$ sur le fichier osm importé, suivi d'un $member$ pour trouver les mot-clés et ensuite récupérer les informations voulues.\newline
 
@@ -131,9 +131,10 @@ Etant donné un itinéraire entre une liste de sommets.
 
 Enfin, la fonction \textbf{itinerary-map()} est la combinaison des deux fonctions précédentes c'est-à-dire elle place les sommets et les aretes à la fois.
 \end{enumerate}
-
+\subsubsection{Le serveur racket}
+Dans le fichier \textit{server.rkt}, nous avons implémenté les différents fonctions qui servent à traiter les \textit{requests} du language Racket, afin de pouvoir récupérer l'url éxecutée. En effet, nous avons fait quatres \textbf{rules} comme il est précisé dans l'énoncé, $display, ~route, ~distance$ et $cycle$. La fonction \textit{server-dispatch} permet de récupérer l'url à exécuter et vérifie si le mot directement apr\`es $http://localhost:9000/$ et avant $\?$ correspond à l'un des \textit{définis} précedemment, si c'est le cas, elle appelle la fonction correspondante. 
 \subsection{Parcours du graph et itinéraire}
-Une première façon de chercher l'itineraire entre deux noeuds est le parcours en profondeur. En effet, nous avons impémenté une fonction de parcours en profondeur, qui, étant donné un graphe et un noeud de départ parcourt la totalité des noeuds appartenant à la même composante connexe que le noeud de départ, suivant le trajet du parcours en pronfondeur; commençons par une racine, on parcourt un premier fils puis tous ses fils récursivement, ensuite, on passe aux autres la racine. Deux variables nous ont été utiles, une première variable nommée \textit{Marked} qui marque chaque élement par lequel on est déj\`a passé pour ne pas le parcourir une deuxième fois. Et la variable \textit{result} qui joue le rôle d'une pile enregistrant à chaque fois l'itinéraire entre la racine est le noeuds en cours de traitement par la fonction. En effet, à chaque \textbf{appel récursif}, la liste empile le noeuds en cours de traitement, mais une fois cet appel fini, la liste dépile ce noeud. De cette façon, dès que le noeud traité est celui qu'on recherche, la liste \textit{result} contient le trajet voulu à partir de la racine, et est donc retournée. Par contre, cette fonction a besoin d'un parcours en profondeur déj\`a effectué sur le noeud de départ pour décider si le noeud d'arrivé est joignable ou pas.
+Une première façon de chercher l'itinéraire entre deux noeuds est le parcours en profondeur. En effet, nous avons implémenté une fonction de parcours en profondeur, qui, étant donné un graphe et un noeud de départ parcourt la totalité des noeuds appartenant à la même composante connexe que le noeud de départ, suivant le trajet du parcours en pronfondeur. Commençant par une racine, on parcourt un premier fils puis tous ses fils récursivement, ensuite, on passe aux autres fils de la racine. Deux variables nous ont été utiles, une première variable nommée \textit{Marked} qui marque chaque élement par lequel on est déj\`a passé pour ne pas le parcourir une deuxième fois. Et la variable \textit{result} qui joue le rôle d'une pile enregistrant à chaque fois l'itinéraire entre la racine est le noeud en cours de traitement par la fonction. En effet, à chaque \textbf{appel récursif}, la liste empile le noeud en cours de traitement, mais une fois cet appel fini, la liste dépile ce noeud. De cette façon, dès que le noeud traité est celui qu'on recherche, la liste \textit{result} contient le trajet voulu à partir de la racine, et est donc retournée. Par contre, cette fonction a besoin d'un parcours en profondeur déj\`a effectué sur le noeud de départ pour décider si le noeud d'arrivé est joignable ou pas.
 
 \subsection{La formule de Haversine} %% Imane
 Puisque dans ce projet, nous recourons à la manipulation des graphes, il est évident que l'on ait besoin d'un outil de calcul des distances à partir des coordonnées des sommets. Conformément aux instructions de l'énoncé, nous avons utilisé la formule de Haversine :
@@ -190,7 +191,7 @@ Le résultat de ce traitement est une table de hachage contenant les ids des noe
 Le problème du voyageur de commerce est un problème classique d'optimisation, qui se résout efficamement à l'aide d'heuristiques comme celles des algorithmes génétiques ou des algorithmes de colonies de fourmis. Mais ces algorithmes sont plus adaptés à une implémentation itérative que fonctionelle.
 \newline
 
-Le but véritable de cette partie était de se familiariser au parcours de graphe en implémentant plusieurs stratégies de résolution du TSP (problème du voyageur de commerce). À commencer par la méthode des plus proches voisins, qui est une méthode na\"\i ve qui part d'un noeud arbitraire et construit un cycle en passant à chaque fois par le noeud le plus proche. La suivante est l'insertion minimale (resp. insertion maximale) que l'on apellera greedy: on commence par une liste L de deux noeuds, et on ajoute les noeuds restants à L aux position où la distance est minimale (resp. maximale). \newline
+Le but véritable de cette partie était de se familiariser au parcours de graphe en implémentant plusieurs stratégies de résolution du TSP (problème du voyageur de commerce). À commencer par la méthode des plus proches voisins, qui est une méthode na\"\i ve qui part d'un noeud arbitraire et construit un cycle en passant à chaque fois par le noeud le plus proche. La suivante est l'insertion minimale que l'on apellera greedy: on commence par une liste L de deux noeuds, et on ajoute les noeuds restants à L aux position où la distance est minimale. Une autre façon (peu commune) de résoudre le problème est de parcourir aléatoirement les sommets. \newline
 
 \newpage
 \section{Complexité des algorithmes, temps d'éxecution et mémoire}
@@ -201,7 +202,7 @@ Notons g le graph obtenu. L'opération de réduction supprime un noeud de degré
 
 \subsection{Parcours du graph et les itinéraires} 
 \subsection{La formule de Haversine}
-Il s'agit ici de calculer une formule mathématique dont les paramètres sont donnée en temps constant grace au hash table. D'où une  compléxité en $O(1)$.
+Il s'agit ici de calculer une formule mathématique dont les paramètres sont donnés en temps constant grace au hash table. D'où une  compléxité en $O(1)$.
 \subsection{Dijkstra}
 Pour obtenir la distance d'un sommet de départ à un sommet d'arrivée, on doit d'abord savoir s'ils sont dans un même sous-graphe connexe. C'est la misssion de la fonction depth-first de complexité temporelle $O(\vert V\vert+\vert F\vert)$.En somme, la complexité est quadratique.
 L'implémentation d'un structure de donnée comme une file de priorité par tas aurait pu permettre d'obtenir une complexité en $O((\vert F\vert+\vert V\vert)\times\log(\vert V\vert))$.
@@ -246,14 +247,14 @@ $http://localhost:9000/$
 
 
 Dans cette seconde image on représente les sommets et les aretes en plus du chemin reliant deux sommets. Le choix de couleurs différentes est tout à fait possible. cette map est obtenue à l'aide du lien :
-$http://localhost:9000/route?start=392014874&end=392015296$
+$http://localhost:9000/route?start=392014874\&end=392015296$
 \begin{center}
 \includegraphics[scale=0.3]{route1.png}
 \end{center}
 
 \newpage
 Dans cette troisième image, on représente les sommets et les arretes et le chemin le plus court reliant deux sommets choisis aléatoirement. Le cercle en bleu désigne le sommet de départ et le cercle en rouge désigne le sommet d'arrivée. Vous pouvez constater qu'au dessus de chaque \textit{sommet/cercle} figure la distance (en km) séparant ce sommet du sommet de départ. cette map est obtenue à l'aide du lien :
-$http://localhost:9000/distance?start=392014874&end=392015296$
+$http://localhost:9000/distance?start=392014874\&end=392015296$
 
 \begin{center}
 \includegraphics[scale=0.3]{distance1.png}
